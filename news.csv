@@ -1,0 +1,10 @@
+1,2017-07-10,title1,It is powerful enough to be at the core of the biggest blogging system on the web (WordPress)!
+2,2017-07-10,title2,It is deep enough to run the largest social network (Facebook)!
+3,2017-07-10,title3,It is also easy enough to be a beginner's first server side language!
+4,2017-07-10,title4,PHP code are executed on the server
+5,2017-07-10,title5,PHP is compatible with almost all servers used today
+6,2017-07-10,title6, Download it from the official PHP resource
+7,2017-07-10,title7,A PHP script is executed on the server and the plain HTML result is sent back to the browser..
+8,2017-07-10,title8,How can I align the corresponding text to the left and to the right, while keeping it on the same line
+9,2017-07-10,title9,While several of the solutions here will work
+10,2017-07-10,title10,Add span on each or group of words you want to align left or right. then add id or class on the span such as
