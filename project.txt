@@ -4,25 +4,25 @@ Project Topic: Underwater Hockey Club
 Project Function Requirements:
 
 1. Functionality planned for all users.
-    a. Seeing the club news on the homepage
-    b. Seeing the club's match schedule. The incoming three is shown on the homepage and all are shown on the match page.
-    c. Seeing the team's introduction, and every team member's introduction including a photo and a paragraph.
+    a. Seeing the club news on the homepage.
+    b. Seeing the club's match schedule. The incoming three are shown on the homepage and all are shown on the match's page.
+    c. Seeing the team's introduction and every team member's introduction. The team's introduction is an article and the each member's introduction include an avatar and a short paragraph.
     d. Seeing the club's introduction on the About page.
     e. Seeing the club's contact information on the Contact page.
     f. Become a general registered user by submitting the registration form. 
 
 2. Functionality planned for registered users only.
-    a. There are two kinds of registered user, one for the general registered user, other for the website's administrator.
-    b. All anonymous user can become a general registered user by submitting the registration form with some valid inputs.
-    c. The website's administrator permission can only be granted by the club's manager via the backend database interface. There is no interface on the webpage for anybody to upgrade to be a website's administrator.
-    d. A general registered user can comment the club news and matches.
-    e. The website's administrator has the permission to publish news, update the matches and score data, update the team member's information, etc.
+    a. There are three kinds of registered users, which are the general registered user, the content manager and the website administrator.
+    b. The general registered user can comment on the news and matches.
+    c. The content manager can add, update and delete news, team member's introduction and match record. Content managers are responsible for managing the website's content.
+    d. The website's administrator can upgrade a general registered user to a content manager.
+    e. The permission of the website's administrator just can be set from the background database interface under the club manager's supervise. There is no interface on the webpage to upgrade any user to the website's administrator.
 
 3. Functionality planned for simple search.
     a. Search news by keywords.
     b. Search match by the team's name.
-    c. Search match by match site. 
+    c. Search match by location. 
     
 4. Functionality planned for the complex search.
     a. Search news by the combination of keywords and publish time.
-    b. Search match by the combination of the team name, match site, team member, etc. 
+    b. Search match by the combination of the team name, location, time, team member, etc. 
