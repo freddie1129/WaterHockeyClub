@@ -12,17 +12,67 @@
 
 // Create a new database, if the file doesn't exist and open it for reading/writing.
 // The extension of the file is arbitrary.
-$db = new SQLite3('analytics.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+$db = new SQLite3('waterhockey.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
 
 
-// Create a table.
-
-$db->query('CREATE TABLE IF NOT EXISTS "visits" (
+// Create users' table.
+$db->query('CREATE TABLE IF NOT EXISTS "user" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "user_id" INTEGER,
-    "url" VARCHAR,
+    "username" VARCHAR,
+    "password" VARCHAR,
+    "emailAddress" VARCHAR,
+    "type" VARCHAR,
     "time" DATETIME
 )');
+
+// Create News' table.
+$db->query('CREATE TABLE IF NOT EXISTS "news" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "title" VARCHAR,
+    "time" DATETIME,
+    "content" TEXT,
+    "userId" INTEGER NOT NULL,
+    FOREIGN KEY(userId) REFERENCES user(id)
+)');
+
+// Create Club table.
+$db->query('CREATE TABLE IF NOT EXISTS "club" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "name" VARCHAR,
+    "location" VARCHAR
+)');
+
+// Create Team member table.
+$db->query('CREATE TABLE IF NOT EXISTS "player" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "first_name" VARCHAR,
+    "last_name" VARCHAR,
+    "birthday" DATE,
+    "clubId" INTEGER,
+    FOREIGN KEY(clubId) REFERENCES club(id)
+)');
+
+// Create Thread table.
+$db->query('CREATE TABLE IF NOT EXISTS "thread" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "" VARCHAR,
+    "last_name" VARCHAR,
+    "birthday" DATE,
+    "clubId" INTEGER,
+    FOREIGN KEY(clubId) REFERENCES club(id)
+)');
+
+
+// Create Match' table.
+$db->query('CREATE TABLE IF NOT EXISTS "match" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "title" VARCHAR,
+    "time" DATETIME,
+    "content" TEXT,
+    "userId" INTEGER NOT NULL,
+    FOREIGN KEY(userId) REFERENCES user(userId)
+)');
+
 
 
 // Insert some sample data.
@@ -34,28 +84,29 @@ $db->query('CREATE TABLE IF NOT EXISTS "visits" (
 // you may be surprised why the INSERTs are so slow.
 
 $db->exec('BEGIN');
-$db->query('INSERT INTO "visits" ("user_id", "url", "time")
-    VALUES (42, "/test", "2017-01-14 10:11:23")');
-$db->query('INSERT INTO "visits" ("user_id", "url", "time")
-    VALUES (42, "/test2", "2017-01-14 10:11:44")');
+$db->query('INSERT INTO "user" ("username", "password", "emailAddress", "time")
+    VALUES ("freddie", "1254", "ad@gmail.com", "2017-01-14 10:11:23")');
+$db->query('INSERT INTO "news" ("title", "time", "content","userId")
+    VALUES ("title", "2017-01-14 10:11:44","this is today\'s new", (SELECT userId from user WHERE username="freddie" ) )');
 $db->exec('COMMIT');
 
 
-// Insert potentially unsafe data with a prepared statement.
-// You can do this with named parameters:
 
-$statement = $db->prepare('INSERT INTO "visits" ("user_id", "url", "time")
-    VALUES (:uid, :url, :time)');
-$statement->bindValue(':uid', 1337);
-$statement->bindValue(':url', '/test');
-$statement->bindValue(':time', date('Y-m-d H:i:s'));
-$statement->execute(); // you can reuse the statement with different values
 
 
 // Fetch today's visits of user #42.
 // We'll use a prepared statement again, but with numbered parameters this time:
+$statement = $db->prepare('SELECT * FROM "user" WHERE "username" = ?');
+$statement->bindValue(1, "freddie");
+$result = $statement->execute();
+echo("Get the 1st row as an associative array:\n");
+print_r($result->fetchArray(SQLITE3_ASSOC));
+echo("\n");
 
-$statement = $db->prepare('SELECT * FROM "visits" WHERE "user_id" = ? AND "time" >= ?');
+
+
+
+$statement = $db->prepare('SELECT * FROM "user" WHERE "username" = ? AND "time" >= ?');
 $statement->bindValue(1, 42);
 $statement->bindValue(2, '2017-01-14');
 $result = $statement->execute();

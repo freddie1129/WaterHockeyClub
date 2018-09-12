@@ -26,3 +26,14 @@ Project Function Requirements:
 4. Functionality planned for the complex search.
     a. Search news by the combination of keywords and publish time.
     b. Search match by the combination of the team name, location, time, team member, etc. 
+
+
+Tables:
+1 UserTable [id, name, password, emailAddress, createTime, updateTime]
+2 NewsTable [id, title, createTime, author, content, editor(userId)]
+3 MatchTable [id, clubA, clubB, time, location, status[in coming, past], score]
+4 TeamMemberTable [id, firstName, LastName, Birthday, ClubId]
+5 ClubTable [id, name, createTime, location]
+6 CommentsTable [id,newsId, userId, comments, comment]
+
+
