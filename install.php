@@ -52,6 +52,17 @@ $db->query('CREATE TABLE IF NOT EXISTS "player" (
     FOREIGN KEY(clubId) REFERENCES club(id)
 )');
 
+// Create Match table.
+$db->query('CREATE TABLE IF NOT EXISTS "match" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "club_a_id" VARCHAR,
+    "club_b_id" VARCHAR,
+    "time" DATE,
+    "location" VARCHAR,
+    FOREIGN KEY(club_a_id) REFERENCES club(id),
+    FOREIGN KEY(club_b_id) REFERENCES club(id)
+)');
+
 // Create Thread table.
 $db->query('CREATE TABLE IF NOT EXISTS "thread" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -84,8 +95,8 @@ $db->query('CREATE TABLE IF NOT EXISTS "match" (
 // you may be surprised why the INSERTs are so slow.
 
 $db->exec('BEGIN');
-$db->query('INSERT INTO "user" ("username", "password", "emailAddress", "time")
-    VALUES ("freddie", "1254", "ad@gmail.com", "2017-01-14 10:11:23")');
+//$db->query('INSERT INTO "user" ("username", "password", "emailAddress", "type","time")
+//    VALUES ("freddie", "1254", "ad@gmail.com", "admin", "2017-01-14 10:11:23")');
 $db->query('INSERT INTO "news" ("title", "time", "content","userId")
     VALUES ("title", "2017-01-14 10:11:44","this is today\'s new", (SELECT userId from user WHERE username="freddie" ) )');
 $db->exec('COMMIT');
