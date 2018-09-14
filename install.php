@@ -21,7 +21,7 @@ $db->query('CREATE TABLE IF NOT EXISTS "user" (
     "username" VARCHAR,
     "password" VARCHAR,
     "emailAddress" VARCHAR,
-    "type" VARCHAR,
+    "userType" VARCHAR,
     "time" DATETIME
 )');
 

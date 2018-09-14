@@ -134,6 +134,10 @@ class User
         $this->time = $time;
     }
 
+    public function __toString(){
+ // TODO: Implement __toString() method.
+    return sprintf("Id: %u, Username: %s, Password: %s, EmaillAddress: %s, UserType: %s, Time: %s\n",$this->id, $this->username, $this->password, $this->emailAddress, $this->userType, $this->time);
+    }
 
 }
 
