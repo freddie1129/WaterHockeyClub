@@ -170,6 +170,35 @@ function dbGetUserByToken($userToken)
 }
 
 
+// check user's existence
+function dbSignUpNewUser($username,$emailAddress, $password)
+{
+    global $glbDbName;
+    global $glbUserTypeClient;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "user" WHERE "username" = :username');
+    $statement->bindValue(':username', $username);
+    $result = $statement->execute();
+    if ($row = $result->fetchArray())
+    {
+        $db->close();
+        $ret = array("status" => "failed",
+            "msg" => $username." is existed");
+        return $ret;
+    }
+    else
+    {
+        $accessToken = dbGenerateAccessToken($username);
+        dbInsertUser(new User( 0, $username,$password,$emailAddress, $accessToken, $glbUserTypeClient, date('Y-m-d H:i:s')));
+        $db->close();
+        $ret = array("status" => "success",
+            "username" => $username,
+            "emailAddress" => $emailAddress,
+            "accessToken" => $accessToken);
+        return $ret;
+    }
+}
+
 
 
 // update a user

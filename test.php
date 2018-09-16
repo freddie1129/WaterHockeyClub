@@ -20,12 +20,14 @@ $db = new SQLite3('waterhockey.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READW
 dbDeleteAllUser();
 
 // Add some users
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0,"chen1","secret","chen@gmail.com", $glbUserTypeAdmin,date('Y-m-d H:i:s')));
+$index = 0;
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+
+
 
 // List All users
 echo "<h3>List all users</h3>";

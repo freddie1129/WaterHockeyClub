@@ -19,9 +19,13 @@ if (isset($_POST['action']))
         case 'httpLoginByToken':
             httpLoginByToken($_POST['userToken']);
             break;
+        case 'httpSignup':
+            httpSignup($_POST['username'],$_POST['emailAddress'],$_POST['password']);
+            break;
     }
 }
 
+// Handling login form
 function httpLogin($username,$password)
 {
     $msg = dbIsValidUser($username,$password);
@@ -41,6 +45,15 @@ function httpLogin($username,$password)
     }
 }
 
+// Handling Signup form
+function httpSignup($username,$emailAddress,$password)
+{
+    $ret = dbSignUpNewUser($username,$emailAddress,$password);
+    echo json_encode($ret);
+}
+
+
+// Handling Auto Login by access token
 function httpLoginByToken($userToken)
 {
     $ret = dbIsValidUserByToken($userToken);
