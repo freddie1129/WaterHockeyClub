@@ -15,6 +15,7 @@ class User
     var $username;
     var $password;
     var $emailAddress;
+    var $accessToken;
     var $userType;
     var $time;
 
@@ -22,17 +23,19 @@ class User
      * User constructor.
      * @param $id
      * @param $username
-     * @param $passwrod
+     * @param $password
      * @param $emailAddress
+     * @param $accessToken
      * @param $userType
      * @param $time
      */
-    public function __construct($id, $username, $password, $emailAddress, $userType, $time)
+    public function __construct($id, $username, $password, $emailAddress, $accessToken, $userType, $time)
     {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
         $this->emailAddress = $emailAddress;
+        $this->accessToken = $accessToken;
         $this->userType = $userType;
         $this->time = $time;
     }
@@ -134,9 +137,43 @@ class User
         $this->time = $time;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @param mixed $accessToken
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+    }
+
+
+
     public function __toString(){
  // TODO: Implement __toString() method.
-    return sprintf("Id: %u, Username: %s, Password: %s, EmaillAddress: %s, UserType: %s, Time: %s\n",$this->id, $this->username, $this->password, $this->emailAddress, $this->userType, $this->time);
+    return sprintf("Id: %u, Username: %s, Password: %s, EmaillAddress: %s, accessToken: %s, UserType: %s, Time: %s\n",$this->id, $this->username, $this->password, $this->emailAddress,$this->getAccessToken(), $this->userType, $this->time);
     }
 
 }

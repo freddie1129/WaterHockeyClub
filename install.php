@@ -20,6 +20,7 @@ $db->query('CREATE TABLE IF NOT EXISTS "user" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "username" VARCHAR,
     "password" VARCHAR,
+    "accessToken" VARCHAR,
     "emailAddress" VARCHAR,
     "userType" VARCHAR,
     "time" DATETIME
