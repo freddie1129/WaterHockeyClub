@@ -43,7 +43,10 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a hidden id="buttonLogin" href="#loginModal" data-toggle="modal" data-target="#loginModal" ><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</a></li>
                 <li><a hidden id="buttonSignup" href="#signupModal" data-toggle="modal" data-target="#signupModal" ><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Sign up</a></li>
-                <li><a hidden id="containerUsername" href="#"><span class="glyphicon glyphicon-user"></span> <span id="txUsername" >name</span></a></li>
+                <li><a hidden id="buttonUserManage" href="#editUserModal" data-toggle="modal" data-target="#editUserModal" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Admin</a></li>
+
+                <li><a hidden id="containerUsername" href="#editUserModal"><span class="glyphicon glyphicon-user"></span> <span id="txUsername" >name</span></a></li>
+
                 <li><a hidden id="buttonLogout" href="#loginModal" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
             </ul>
         </div>
@@ -116,7 +119,7 @@
 
         <!-- Login Modal -->
         <div class="modal fade" id="loginModal" role="dialog">
-            <form id="login_form" name="httpLogin" class="js-ajax-php-json" action="httpAction.php" method="post" accept-charset="utf-8"">
+            <form id="login_form" name="httpLogin" class="js-ajax-php-json" action="httpAction.php" method="post" accept-charset="utf-8">
             <div class="modal-dialog">
                 <input type="hidden" name="action" value="httpLogin">
 
@@ -147,7 +150,7 @@
 
         <!-- Sign up Modal -->
         <div class="modal fade" id="signupModal" role="dialog">
-            <form id="signup_form" name="httpLogin" class="js-ajax-php-json" action="httpAction.php" method="post" accept-charset="utf-8"">
+            <form id="signup_form" name="httpLogin" class="js-ajax-php-json" action="httpAction.php" method="post" accept-charset="utf-8">
             <div class="modal-dialog">
                 <input type="hidden" name="action" value="httpSignup">
 
@@ -179,7 +182,62 @@
                         <button id="submit_signup_form" type="submit" class="btn btn-default" data-dismiss="modal">Sign Up</button>
                     </div>
                 </div>
+            </div>
+            </form>
+        </div>
 
+        <!-- Edit User Modal -->
+        <div class="modal fade" id="editUserModal" role="dialog">
+            <form id="edit_user_form" name="httpLogin" class="js-ajax-php-json" action="httpAction.php" method="post" accept-charset="utf-8">
+            <div class="modal-dialog">
+                <input type="hidden" name="action" value="httpUpdateUserProfile">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Sign up</h4>
+                    </div>
+                    <?php
+                        require_once('libcommon.php');
+                        $cookie_token = "accessToken";
+                        if(!isset($_COOKIE[$cookie_token])) {
+                            echo '<div class="modal-body">';
+                            echo "<p>Something is wrong with your account, please logout and try again.</p>";
+                            echo '</div>';
+                        }
+                        else
+                        {
+                            echo '<div class="modal-body">';
+                            $user = dbGetUserByToken($_COOKIE[$cookie_token]);
+                            $format = '<div class="modal-body">
+                            <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" class="form-control" id="edit_username" name="username" value="%s" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address:</label>
+                            <input type="email" class="form-control" id="edit_email" name="emailAddress" value="%s">
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Password:</label>
+                            <input type="password" class="form-control" id="edit_pwd" name="password1" value="%s">
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Confirm Password:</label>
+                            <input type="password" class="form-control" id="edit_pwd_confirm" name="password" value="%s">
+                        </div>
+                        <input type="hidden" name="userType" value="%s">
+
+                        </div>
+                        <div class="modal-footer">
+                        <button id="submit_edit_user_form" type="submit" class="btn btn-default" data-dismiss="modal">Save</button>
+                    </div>';
+                            echo sprintf($format, $user->username, $user->emailAddress, $user->password,$user->password,$user->userType);
+                            echo '</div>';
+                        }
+                    ?>
+                </div>
             </div>
             </form>
         </div>
@@ -311,7 +369,6 @@
             $('#buttonLogout').hide();
         }
 
-
         // login
         $("#login_form").on("submit", function(e) {
             var postData = $(this).serialize();
@@ -409,9 +466,6 @@
                 return false;
             }
 
-
-
-
             var postData = $(this).serialize();
             $.ajax({
                 url: formURL,
@@ -442,6 +496,101 @@
             e.preventDefault();
         });
 
+        // Update User profile
+        $("#edit_user_form").on("submit", function(e) {
+
+            var valArray = $(this).serializeArray();
+            console.log(valArray);
+            var username = valArray[1]['value'];
+            var emailAddress = valArray[2]['value'];
+            var password1 = valArray[3]['value'];
+            var password2 = valArray[4]['value'];
+            console.log(username);
+            console.log(emailAddress);
+            console.log(password1);
+            console.log(password2);
+            console.log(formURL);
+
+            if (username == "")
+            {
+                alert("Account Name must be filled out");
+                return false;
+            }
+
+            if (emailAddress == "")
+            {
+                alert("Email Address must be filled out");
+                return false;
+            }
+            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (!re.test(String(emailAddress).toLowerCase()))
+            {
+                alert("Email Address is invalid");
+                return false;
+            }
+
+            if (password1 == "")
+            {
+                alert("Password must be filled out");
+                return false;
+            }
+
+            var v = validatePassword(password1);
+            if (v != true)
+            {
+                alert(v);
+                return false;
+            }
+
+            if (password2 == "")
+            {
+                alert("Confirmed password must be filled out");
+                return false;
+            }
+
+            var v = validatePassword(password2);
+            if (v != true)
+            {
+                alert(v);
+                return false;
+            }
+
+            if (password1 != password2 )
+            {
+                alert("Password and confirmed password are not same.");
+                return false;
+            }
+
+            var postData = $(this).serialize();
+            $.ajax({
+                url: formURL,
+                type: "POST",
+                data: postData,
+                dataType: "json",
+                success: function(data, textStatus, jqXHR) {
+                    if(data["status"] == "success")
+                    {
+                        //$('#buttonLogin').hide();
+                        //$('#buttonSignup').hide();
+                        //$('#containerUsername').show();
+                        //$('#buttonLogout').show();
+                        //$('#txUsername').html(data["username"]);
+                        //setCookie(tag_cookie_accessToken,data["accessToken"],30);
+                    }
+                    else
+                    {
+                        alert("Sign up failed.\nReason: " + data["msg"]);
+                    }
+                },
+                error: function(jqXHR, status, error) {
+                    $('#error').html(jqXHR.responseText);
+                    console.log(status + ": " + error);
+
+                }
+            });
+            e.preventDefault();
+        });
+
 
 
         $("#buttonLogout").on('click',function () {
@@ -457,14 +606,75 @@
 
         });
 
-
+        // respond clicking login button
         $("#submit_login_form").on('click', function() {
             $("#login_form").submit();
         });
 
+        // respond clicking sign up button
         $("#submit_signup_form").on('click', function() {
             $("#signup_form").submit();
         });
+
+        // respond edit user button
+        $("#submit_edit_user_form").on('click', function() {
+            $("#edit_user_form").submit();
+        });
+
+        // on click user button
+        $("#containerUsername").on('click', function() {
+            var userToken = getCookie(tag_cookie_accessToken);
+            if (userToken != "") {
+                var data = {"userToken" : userToken,
+                    "action" : "httpLoginByToken"};
+                var postData = $.param(data);
+                $.ajax({
+                    url: formURL,
+                    type: "POST",
+                    data: postData,
+                    dataType: "json",
+                    success: function(data, textStatus, jqXHR) {
+                        if(data["status"] == "success")
+                        {
+                            $('#edit_username').val(data["username"]);
+                            $('#edit_email').val(data["emailAddress"]);
+                            $('#edit_pwd').val(data["password"]);
+                            $('#edit_pwd_confirm').val(data["password"]);
+                            //$('#txUsername').html(data["username"]);
+
+                            $("#editUserModal").modal('show');
+
+                        }
+                        else
+                        {
+                            $('#buttonLogin').show();
+                            $('#buttonSignup').show();
+                            $('#containerUsername').hide();
+                            $('#buttonLogout').hide();
+                        }
+                    },
+                    error: function(jqXHR, status, error) {
+                        //  $('#error').html(jqXHR.responseText);
+                        console.log(status + ": " + error);
+                    }
+                });
+            } else {
+                $('#buttonLogin').show();
+                $('#buttonSignup').show();
+                $('#containerUsername').hide();
+                $('#buttonLogout').hide();
+            }
+
+
+
+
+
+
+        });
+
+
+
+
 
     });
 

@@ -22,6 +22,12 @@ if (isset($_POST['action']))
         case 'httpSignup':
             httpSignup($_POST['username'],$_POST['emailAddress'],$_POST['password']);
             break;
+        case 'httpUpdateUserProfile':
+            httpUpdateUserProfile($_POST['username'],$_POST['emailAddress'],$_POST['password'],$_POST['userType']);
+            break;
+        case 'httpDeleteUser':
+            httpDeleteUser($_POST['userId']);
+            break;
     }
 }
 
@@ -52,6 +58,22 @@ function httpSignup($username,$emailAddress,$password)
     echo json_encode($ret);
 }
 
+// Handling update user
+function httpUpdateUserProfile($username,$emailAddress,$password,$userType)
+{
+    $ret = dbUpdateUserByField($username,$emailAddress,$password, $userType);
+    echo json_encode($ret);
+}
+
+// Handling update user
+function httpDeleteUser($userId)
+{
+    dbDeleteUser($userId);
+    $ret = array ( "status" => "success",
+        "msg" => "jkj");
+    echo json_encode($ret);
+}
+
 
 // Handling Auto Login by access token
 function httpLoginByToken($userToken)
@@ -63,6 +85,8 @@ function httpLoginByToken($userToken)
         $ret = array ( "status" => "success",
             "username" => $user->getUsername(),
             "userType" => $user->getUserType(),
+            "emailAddress" => $user->getEmailAddress(),
+            "password" => $user->getPassword(),
             "accessToken" => $user->accessToken);
         echo json_encode($ret);
     }
@@ -72,5 +96,6 @@ function httpLoginByToken($userToken)
         echo json_encode($ret);
     }
 }
+
 
 ?>

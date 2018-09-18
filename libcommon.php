@@ -222,7 +222,34 @@ function dbUpdateUser($user)
     $statement->bindValue(':id', $user->id);
     $statement->execute();
     $db->close();
+
 }
+
+
+// update a user
+function dbUpdateUserByField($username,$emailAddress,$password,$userType)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('UPDATE user SET
+                                                password = :password,
+                                                emailAddress = :emailAddress,
+                                                userType = :userType,
+                                                time = :time
+                                                WHERE username = :username');
+    $statement->bindValue(':username', $username);
+    $statement->bindValue(':password', $password);
+    $statement->bindValue(':emailAddress', $emailAddress);
+    $statement->bindValue(':userType', $userType);
+    $statement->bindValue(':time', date('Y-m-d H:i:s'));
+    $statement->execute();
+    $db->close();
+    $ret = array("status" => "success",
+        "username" => $username,
+        "emailAddress" => $emailAddress);
+    return $ret;
+}
+
 
 // delete a user by id
 function dbDeleteUser($id)
@@ -243,6 +270,7 @@ function dbDeleteAllUser()
     $statement = $db->prepare('DELETE FROM user');
     $statement->execute();
     $db->close();
+    unset($db);
 }
 
 
