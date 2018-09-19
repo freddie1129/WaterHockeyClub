@@ -77,7 +77,7 @@ dbDeleteAllUser();
 // Insert some admin users for testing
 echo "<h3>Insert some admin users for testing</h3>";
 $index = 0;
-for ($index = 0; $index < 9; $index++) {
+for ($index = 0; $index < 10; $index++) {
     $user = new User( 0, $username = "admin_" . strval($index),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s'));
     dbInsertUser($user);
     echo $user;
@@ -85,7 +85,7 @@ for ($index = 0; $index < 9; $index++) {
 
 // Insert some editor users for testing
 echo "<h3>Insert some editor users for testing</h3>";
-for ($index = 0; $index < 9; $index++) {
+for ($index = 0; $index < 10; $index++) {
     $user = new User( 0, $username = "editor_" . strval($index),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeEditor, date('Y-m-d H:i:s'));
     dbInsertUser($user);
     echo $user;
@@ -93,7 +93,7 @@ for ($index = 0; $index < 9; $index++) {
 
 // Insert some general users for testing
 echo "<h3>Insert some general users for testing</h3>";
-for ($index = 0; $index < 9; $index++) {
+for ($index = 0; $index < 10; $index++) {
     $user = new User( 0, $username = "client_" . strval($index),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeClient, date('Y-m-d H:i:s'));
     dbInsertUser($user);
     echo $user;

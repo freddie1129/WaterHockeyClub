@@ -193,7 +193,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Sign up</h4>
+                        <h4 class="modal-title">Update user profile</h4>
                     </div>
                     <?php
                         require_once('libcommon.php');

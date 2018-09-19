@@ -48,8 +48,10 @@
 
 <div class="container-fluid text-center">
     <div class="container">
-        <p>Type something in the input field to search the table for Username, EmailAddress or User Type last names or emails:</p>
-        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br/>
+        <p><b>Type something in the input field to search the table for Username, EmailAddress or User Type last names or emails:</b></p>
+        <br/>
+        <input class="form-control" id="myInput" type="text" placeholder="Search...">
         <br>
         <table class="table table-bordered table-striped">
             <thead>

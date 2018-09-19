@@ -4,7 +4,19 @@ Assignment 1 project.text
 Student Name: Chen Zhu
 Student Number: u1098252
 Project Topic: Underwater Hockey Club
-Project Progress
+Project Progress Report
+
+IMPORTANT NOTE: Before exploring index.php, please running install.php to set up database.
+                After that, Some different type of accounts will be created for logging the website to test other feature.
+                Some available testing accounts are listed as below:
+                username: admin_0   passwords: secret
+                username: admin_1   passwords: secret
+                username: editor_0   passwords: secret
+                username: editor_1   passwords: secret
+                username: client_0   passwords: secret
+                username: client_1   passwords: secret
+
+
 1. Design db scheme
     a. six tables: user table, news table, team member table, club table, match table, comments table
     b. tables relations:
@@ -13,14 +25,14 @@ Project Progress
         club    (have)   member
         club    (take)   match
         M:N relations
-        user    (comments)   comments
+        user    (comments)   news
 2. Create six tables in SQlite.
 3. Finish Login and Logout feature.
 4. Finish Auto Login feature by caching a user token in the cookies. For security issue, every user will be assigned a
-    token when sign up, user name and password won't be saved in the cookies.
+    token when sign up, both user name and password won't be saved in the cookies.
 5. Finish Sign up feature by using a popup form.
 6. Different page view for different type of user.
-    a. For admin user, the project provides a user management panel to manage other users, e.g. upgrading a general user
+    a. For admin user, the project provides a user management page to manage other users, e.g. upgrading a general user
         to a editor user, delete a user.
     b. For general user and editor user, they won't see the management panel.
 7. Show the title list of news on the index page. User can open a news page by clicking the title of news to go though
