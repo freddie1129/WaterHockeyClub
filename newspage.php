@@ -58,27 +58,14 @@
     <div class="row content">
 
         <div class="col-sm-8 text-left">
-            <h1>Welcome</h1>
-            <p><?php
-                $myfile = fopen("intro.txt", "r") or die("Unable to open file!");
-                $s = fread($myfile,filesize("intro.txt"));
-                echo $s;
-                fclose($myfile);
-                ?></p>
-            <hr>
-            <h3>News</h3>
-
             <?php
             require_once('libcommon.php');
-            $newsList = dbGetNews(10);
-            for ($index = 0; $index < count($newsList); $index++)
-            {
-                $news = $newsList[$index];
-                $txt = sprintf("<p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
-                    <span style=\"float:right;\">%s</span></p>", $news->id,$news->title, $news->time);
-                echo $txt;
-            }
-
+            $newId = $_GET["newId"];
+            $news = dbGetNewsById($newId);
+            echo sprintf("<h1 style=\"text-align:center;\">%s</h1>",$news->title);
+            echo sprintf("<p style=\"text-align:center;\">%s</p>",$news->time);
+            echo sprintf("<p>%s</p>",$news->content);
+            echo sprintf("<p style=\"text-align:right;\">(Editor:%s)</p>",$news->author);
             ?>
         </div>
         <div class="col-sm-4 sidenav">
@@ -119,83 +106,83 @@
         <!-- Login Modal -->
         <div class="modal fade" id="loginModal" role="dialog">
             <form id="login_form" name="httpLogin" class="js-ajax-php-json" action="action.php" method="post" accept-charset="utf-8">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">LogIn</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="email">Email address:</label>
-                            <input id="login_username" type="email" class="form-control" id="email" name="username">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">LogIn</h4>
                         </div>
-                        <div class="form-group">
-                            <label for="pwd">Password:</label>
-                            <input id="login_password" type="password" class="form-control" id="pwd" name="password">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="email">Email address:</label>
+                                <input id="login_username" type="email" class="form-control" id="email" name="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Password:</label>
+                                <input id="login_password" type="password" class="form-control" id="pwd" name="password">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="submit_login_form" type="submit" class="btn btn-default" data-dismiss="modal">Log in</button>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button id="submit_login_form" type="submit" class="btn btn-default" data-dismiss="modal">Log in</button>
-                    </div>
-                </div>
 
-            </div>
+                </div>
             </form>
         </div>
 
         <!-- Sign up Modal -->
         <div class="modal fade" id="signupModal" role="dialog">
             <form id="signup_form" name="httpLogin" class="js-ajax-php-json" action="action.php" method="post" accept-charset="utf-8">
-            <div class="modal-dialog">
-                <input type="hidden" name="action" value="httpSignup">
+                <div class="modal-dialog">
+                    <input type="hidden" name="action" value="httpSignup">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Sign up</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" class="form-control" id="sign_in_username" name="username">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Sign up</h4>
                         </div>
-                        <div class="form-group">
-                            <label for="email">Email address:</label>
-                            <input type="email" class="form-control" id="sign_in_email" name="emailAddress">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="username">Username:</label>
+                                <input type="text" class="form-control" id="sign_in_username" name="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email address:</label>
+                                <input type="email" class="form-control" id="sign_in_email" name="emailAddress">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Password:</label>
+                                <input type="password" class="form-control" id="sign_in_pwd" name="password1">
+                            </div>
+                            <div class="form-group">
+                                <label for="pwd">Confirm Password:</label>
+                                <input type="password" class="form-control" id="sign_in_pwd_confirm" name="password">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="pwd">Password:</label>
-                            <input type="password" class="form-control" id="sign_in_pwd" name="password1">
+                        <div class="modal-footer">
+                            <button id="submit_signup_form" type="submit" class="btn btn-default" data-dismiss="modal">Sign Up</button>
                         </div>
-                        <div class="form-group">
-                            <label for="pwd">Confirm Password:</label>
-                            <input type="password" class="form-control" id="sign_in_pwd_confirm" name="password">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="submit_signup_form" type="submit" class="btn btn-default" data-dismiss="modal">Sign Up</button>
                     </div>
                 </div>
-            </div>
             </form>
         </div>
 
         <!-- Edit User Modal -->
         <div class="modal fade" id="editUserModal" role="dialog">
             <form id="edit_user_form" name="httpLogin" class="js-ajax-php-json" action="action.php" method="post" accept-charset="utf-8">
-            <div class="modal-dialog">
-                <input type="hidden" name="action" value="httpUpdateUserProfile">
+                <div class="modal-dialog">
+                    <input type="hidden" name="action" value="httpUpdateUserProfile">
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Sign up</h4>
-                    </div>
-                    <?php
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Sign up</h4>
+                        </div>
+                        <?php
                         require_once('libcommon.php');
                         $cookie_token = "accessToken";
                         if(!isset($_COOKIE[$cookie_token])) {
@@ -233,9 +220,9 @@
                             echo sprintf($format, $user->username, $user->emailAddress, $user->password,$user->password,$user->userType);
                             echo '</div>';
                         }
-                    ?>
+                        ?>
+                    </div>
                 </div>
-            </div>
             </form>
         </div>
 

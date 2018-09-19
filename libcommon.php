@@ -1,21 +1,17 @@
-<?php include 'constant.php';?>
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/09/18
- * Time: 11:49 PM
- */
 
-include 'constant.php';
-require_once('User.php');
-
-
-
+require_once 'constant.php';
+require_once 'User.php';
+require_once 'News.php';
 
 // Insert a user into user table
 function dbInsertUser($user) {
     global $glbDbName;
+    $user_try = dbGetUserByUsername($user->username);
+    if ($user_try != false)
+    {
+        return false;
+    }
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
     $statement = $db->prepare('INSERT INTO "user" ("username", "password", "emailAddress","accessToken", "userType","time")
     VALUES (:username, :password, :emailAddress, :accessToken, :userType, :time)');
@@ -27,9 +23,10 @@ function dbInsertUser($user) {
     $statement->bindValue(':time', date('Y-m-d H:i:s'));
     $statement->execute();
     $db->close();
+    return true;
 }
 
-// select all users for the user table
+// select all users form the user table
 function dbGetAllUsers()
 {
     global $glbDbName;
@@ -65,7 +62,6 @@ function dbIsValidUser($username, $password)
         return "This user is not existed.";
     }
 }
-
 
 // check if it is a valid user
 function dbIsValidUserByToken($userToken)
@@ -267,6 +263,90 @@ function dbDeleteAllUser()
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
     $statement = $db->prepare('DELETE FROM user');
+    $statement->execute();
+    $db->close();
+    unset($db);
+}
+
+// Insert a news into news table
+function dbInsertNews($news, $user) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "news" ("title", "time", "content","userId","author")
+    VALUES (:title, :time, :content, :userId, :author)');
+    $statement->bindValue(':title', $news->title);
+    $statement->bindValue(':time', date('Y-m-d H:i:s'));
+    $statement->bindValue(':content', $news->content);
+    $statement->bindValue(':userId', $user->id);
+    $statement->bindValue(':author', $user->username);
+
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// select all users for the user table
+function dbGetAllNews()
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "news"');
+    $result = $statement->execute();
+    $newsList = array();
+    while($row = $result->fetchArray()) {
+        $news = new News($row["id"],$row["title"],$row["time"],$row["content"],$row["userId"],$row["author"]);
+        array_push($newsList,$news);
+    }
+    $db->close();
+    return $newsList;
+}
+
+// select all users for the user table
+function dbGetNews($number)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "news" LIMIT :number');
+    $statement->bindValue(':number', $number);
+    $result = $statement->execute();
+    $newsList = array();
+    while($row = $result->fetchArray()) {
+        $news = new News($row["id"],$row["title"],$row["time"],$row["content"],$row["userId"],$row["author"]);
+        array_push($newsList,$news);
+    }
+    $db->close();
+    return $newsList;
+}
+
+// select all users for the user table
+// query a user from user table by id
+function dbGetNewsById($id)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "news" WHERE "id" = :id');
+    $statement->bindValue(':id', $id);
+    $result = $statement->execute();
+    if ($row = $result->fetchArray())
+    {
+        $user = new News($row["id"],$row["title"],$row["time"],$row["content"],$row["userId"],$row["author"]);
+        $db->close();
+        return $user;
+    }
+    else
+    {
+        $db->close();
+        return false;
+    }
+}
+
+
+// delete all news from news table
+function dbDeleteAllNews()
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM news');
     $statement->execute();
     $db->close();
     unset($db);

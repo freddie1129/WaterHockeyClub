@@ -54,6 +54,7 @@
         <table class="table table-bordered table-striped">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>User Name</th>
                 <th>Email Address</th>
                 <th>User Type</th>
@@ -68,6 +69,7 @@
             global $glbUserTypeClient;
             $userList = dbGetAllUsers();
             $format = '<tr>
+                <td>%u</td>
                 <td>%s</td>
                 <td>%s</td>
                 <td>
@@ -105,7 +107,7 @@
 
                 }
                 $tag['admin'] .= " disabled";
-                echo sprintf($format,$user->username,$user->emailAddress,$user->id,$user->id,$tag['general'],
+                echo sprintf($format,$user->id,$user->username,$user->emailAddress,$user->id,$user->id,$tag['general'],
                     $user->id,$tag['editor'],
                     $user->id,$tag['admin'],
                     $user->id,$userType == $glbUserTypeAdmin ? "disabled" : "enabled",

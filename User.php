@@ -6,9 +6,6 @@
  * Time: 11:44 PM
  */
 
-
-
-
 class User
 {
     var $id;
@@ -169,12 +166,23 @@ class User
         $this->accessToken = $accessToken;
     }
 
-
-
     public function __toString(){
  // TODO: Implement __toString() method.
-    return sprintf("Id: %u, Username: %s, Password: %s, EmaillAddress: %s, accessToken: %s, UserType: %s, Time: %s\n",$this->id, $this->username, $this->password, $this->emailAddress,$this->getAccessToken(), $this->userType, $this->time);
+
+
+        $format = "<ul>
+                <li>Id: %u</li>
+                <li>username: %s</li>
+                <li>password: %s</li>
+                <li>email Address: %s</li>
+                <li>access token: %s</li>
+                <li>user type: %s</li>
+                <li>create time: %s</li>
+
+</ul>";
+        return sprintf($format,$this->id,$this->username,$this->password,$this->emailAddress,$this->accessToken,$this->userType,$this->time);
     }
+
 
 }
 
