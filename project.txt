@@ -1,3 +1,39 @@
+==============================================================================
+Assignment 1 project.text
+==============================================================================
+Student Name: Chen Zhu
+Student Number: u1098252
+Project Topic: Underwater Hockey Club
+Project Progress
+1. Design db scheme
+    a. six tables: user table, news table, team member table, club table, match table, comments table
+    b. tables relations:
+        1:N relations
+        user    (post)   news
+        club    (have)   member
+        club    (take)   match
+        M:N relations
+        user    (comments)   comments
+2. Create six tables in SQlite.
+3. Finish Login and Logout feature.
+4. Finish Auto Login feature by caching a user token in the cookies. For security issue, every user will be assigned a
+    token when sign up, user name and password won't be saved in the cookies.
+5. Finish Sign up feature by using a popup form.
+6. Different page view for different type of user.
+    a. For admin user, the project provides a user management panel to manage other users, e.g. upgrading a general user
+        to a editor user, delete a user.
+    b. For general user and editor user, they won't see the management panel.
+7. Show the title list of news on the index page. User can open a news page by clicking the title of news to go though
+    the detail of the news.
+8. Testing method: setting up the project by running the install.php, the tables will be created and some example data
+    will be insert the db for the purpose of testing.
+
+
+
+==============================================================================
+Assignment 1 project.text
+==============================================================================
+
 Student Name: Chen Zhu
 Student Number: u1098252
 Project Topic: Underwater Hockey Club
@@ -28,12 +64,6 @@ Project Function Requirements:
     b. Search match by the combination of the team name, location, time, team member, etc. 
 
 
-Tables:
-1 UserTable [id, name, password, emailAddress, createTime, updateTime]
-2 NewsTable [id, title, createTime, author, content, editor(userId)]
-3 MatchTable [id, clubA, clubB, time, location, status[in coming, past], score]
-4 TeamMemberTable [id, firstName, LastName, Birthday, ClubId]
-5 ClubTable [id, name, createTime, location]
-6 CommentsTable [id,newsId, userId, comments, comment]
+
 
 
