@@ -28,6 +28,9 @@ if (isset($_POST['action']))
         case 'httpDeleteUser':
             httpDeleteUser($_POST['userId']);
             break;
+        case 'httpChangeUserType':
+            httpDeleteUser($_POST['userId'],$_POST['userType']);
+            break;
     }
 }
 
@@ -39,9 +42,7 @@ function httpLogin($username,$password)
     {
         $user = dbGetUserByUsername($username);
         $ret = array ( "status" => "success",
-                    "username" => $user->getUsername(),
-                    "userType" => $user->getUserType(),
-                    "accessToken" => $user->accessToken);
+            "user" => $user);
         echo json_encode($ret);
     }
     else{
@@ -75,6 +76,19 @@ function httpDeleteUser($userId)
 }
 
 
+// Handling update user
+function httpChangeUserType($userId,$userType)
+{
+    $user = dbGetUserById($userId);
+    $user->userType = $userType;
+    dbUpdateUser($user);
+    $ret = array ( "status" => "success",
+        "user" => $user);
+    echo json_encode($ret);
+}
+
+
+
 // Handling Auto Login by access token
 function httpLoginByToken($userToken)
 {
@@ -83,11 +97,7 @@ function httpLoginByToken($userToken)
     {
         $user = dbGetUserByToken($userToken);
         $ret = array ( "status" => "success",
-            "username" => $user->getUsername(),
-            "userType" => $user->getUserType(),
-            "emailAddress" => $user->getEmailAddress(),
-            "password" => $user->getPassword(),
-            "accessToken" => $user->accessToken);
+            "user" => $user);
         echo json_encode($ret);
     }
     else{

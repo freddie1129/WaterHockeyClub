@@ -1,4 +1,4 @@
-<?php include 'appConstant.php';?>
+<?php include 'constant.php';?>
 <?php
 /**
  * Created by PhpStorm.
@@ -7,7 +7,7 @@
  * Time: 11:49 PM
  */
 
-include 'appConstant.php';
+include 'constant.php';
 require_once('User.php');
 
 
@@ -189,12 +189,11 @@ function dbSignUpNewUser($username,$emailAddress, $password)
     else
     {
         $accessToken = dbGenerateAccessToken($username);
-        dbInsertUser(new User( 0, $username,$password,$emailAddress, $accessToken, $glbUserTypeClient, date('Y-m-d H:i:s')));
+        $user = new User( 0, $username,$password,$emailAddress, $accessToken, $glbUserTypeClient, date('Y-m-d H:i:s'));
+        dbInsertUser($user);
         $db->close();
         $ret = array("status" => "success",
-            "username" => $username,
-            "emailAddress" => $emailAddress,
-            "accessToken" => $accessToken);
+            "user" => $user);
         return $ret;
     }
 }
@@ -243,10 +242,10 @@ function dbUpdateUserByField($username,$emailAddress,$password,$userType)
     $statement->bindValue(':userType', $userType);
     $statement->bindValue(':time', date('Y-m-d H:i:s'));
     $statement->execute();
+    $user = dbGetUserByUsername($username);
     $db->close();
     $ret = array("status" => "success",
-        "username" => $username,
-        "emailAddress" => $emailAddress);
+        "user" => $user);
     return $ret;
 }
 

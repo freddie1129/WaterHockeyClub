@@ -7,7 +7,7 @@
  */
 include_once 'libcommon.php';
 include_once 'User.php';
-include 'appConstant.php';
+include 'constant.php';
 
 
 
@@ -22,8 +22,8 @@ dbDeleteAllUser();
 // Add some users
 $index = 0;
 dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeEditor, date('Y-m-d H:i:s')));
+dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeClient, date('Y-m-d H:i:s')));
 dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
 dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
 
