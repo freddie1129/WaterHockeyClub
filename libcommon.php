@@ -279,7 +279,6 @@ function dbInsertNews($news, $user) {
     $statement->bindValue(':content', $news->content);
     $statement->bindValue(':userId', $user->id);
     $statement->bindValue(':author', $user->username);
-
     $statement->execute();
     $db->close();
     return true;
@@ -301,7 +300,7 @@ function dbGetAllNews()
     return $newsList;
 }
 
-// select all users for the user table
+// select all News from news table
 function dbGetNews($number)
 {
     global $glbDbName;
@@ -317,6 +316,36 @@ function dbGetNews($number)
     $db->close();
     return $newsList;
 }
+
+
+// select all News from news table
+function dbGetNewsByPageID($pageID)
+{
+    global $glbDbName;
+    global $glbNewsNumberInOnePage;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "news" ORDER BY "time"');
+    $result = $statement->execute();
+    $newsList = array();
+    while($row = $result->fetchArray()) {
+        $news = new News($row["id"],$row["title"],$row["time"],$row["content"],$row["userId"],$row["author"]);
+        array_push($newsList,$news);
+    }
+    $db->close();
+    $num = count($newsList);
+    if ($pageID * $glbNewsNumberInOnePage > $num)
+    {
+        $queryNum = $pageID * $glbNewsNumberInOnePage - $num;
+    }
+    else
+    {
+        $queryNum = $glbNewsNumberInOnePage;
+    }
+    return array_slice($newsList,($pageID - 1) * $glbNewsNumberInOnePage, $queryNum);
+}
+
+
+
 
 // select all users for the user table
 // query a user from user table by id
@@ -339,6 +368,27 @@ function dbGetNewsById($id)
         return false;
     }
 }
+
+// select all users for the user table
+// query a user from user table by id
+function dbCountNews()
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT COUNT (*) as "total" FROM "news" ');
+    $result = $statement->execute();
+    if ($row = $result->fetchArray())
+    {
+        $db->close();
+        return $row["total"];
+    }
+    else
+    {
+        $db->close();
+        return 0;
+    }
+}
+
 
 
 // delete all news from news table

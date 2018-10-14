@@ -67,19 +67,14 @@
                 ?></p>
             <hr>
             <h3>News</h3>
+            <div id="newsList"></div>
+            <div class="container">
+                <button id="previousPage" type="button" class="btn btn-default">Previous</button>
+                <button id="nextPage" type="button" class="btn btn-default">Next</button>
+            </div>
 
-            <?php
-            require_once('libcommon.php');
-            $newsList = dbGetNews(10);
-            for ($index = 0; $index < count($newsList); $index++)
-            {
-                $news = $newsList[$index];
-                $txt = sprintf("<p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
-                    <span style=\"float:right;\">%s</span></p>", $news->id,$news->title, $news->time);
-                echo $txt;
-            }
 
-            ?>
+
         </div>
         <div class="col-sm-4 sidenav">
             <?php

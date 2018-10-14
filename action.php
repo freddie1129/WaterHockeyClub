@@ -6,6 +6,8 @@
  * Time: 12:57 PM
  */
 require_once('libcommon.php');
+require_once('constant.php');
+
 
 header("Content-type: application/json");
 
@@ -30,6 +32,8 @@ if (isset($_POST['action']))
             break;
         case 'httpChangeUserType':
             httpDeleteUser($_POST['userId'],$_POST['userType']);
+        case 'httpGetNewsList':
+            httpGetNewsList($_POST['pageId']);
             break;
     }
 }
@@ -107,5 +111,37 @@ function httpLoginByToken($userToken)
     }
 }
 
+// Handling Auto Login by access token
+function httpGetNewsList($pageId)
+{
+    global $glbNewsNumberInOnePage;
+    $newCount = dbCountNews();
+    if ($glbNewsNumberInOnePage * $pageId - $newCount >= $glbNewsNumberInOnePage)
+    {
+        $ret = array ( "status" => "failed",
+            "msg" => "It is already the last page.",
+            "count" => $newCount);
+        echo json_encode($ret);
+    }
+    else
+    {
+        $news = dbGetNewsByPageID($pageId);
+        $htmlArray = array();
+        for ($index = 0; $index < count($news); $index++)
+        {
+            $item = $news[$index];
+            $txt = sprintf("<p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
+                    <span style=\"float:right;\">%s</span></p>", $item->id,$item->title, $item->time);
+            array_push($htmlArray,$txt);
+        }
+
+        $ret = array ( "status" => "success",
+            "news" => $htmlArray,
+            "maxPageNum" => round(ceil($newCount / $glbNewsNumberInOnePage)),
+            "count" => $newCount);
+
+        echo json_encode($ret);
+    }
+}
 
 ?>

@@ -8,6 +8,9 @@ var constUserTypeGeneral = "client"
 var constUserTypeEditor = "editor"
 var constUserTypeAdmin = "admin"
 var usrId,usrName,usrToken,usrType,usrEmail,usrPassword
+var currentNewsPage = 1
+var maxNewsPage
+
 
 
 
@@ -132,9 +135,40 @@ function controlUserButtons(islogin,userType)
 }
 
 
+// update news list on the homepage
+function updateNewsList(pageID)
+{
+    var data = {"pageId" : pageID,
+        "action" : "httpGetNewsList"};
+    var postData = $.param(data);
+    lib.http(formURL,POST,postData,function(data, textStatus, jqXHR) {
+        if(data["status"] == "success")
+        {
+            $("#newsList").empty();
+            var i;
+            for (i = 0; i < data["news"].length; i++)
+            {
+                var news = data["news"][i];
+                maxNewsPage = data["maxPageNum"];
+                $("#newsList").append(news);
+            }
+        }
+        else
+        {
+            //controlUserButtons(true,usrType);
+        }
+        console.log(data);
+    },function(jqXHR, status, error) {
+        console.log(status + ": " + error);
+    });
+
+}
+
+
 // must apply only after HTML has loaded */
 $(document).ready(function () {
 
+    console.log("This is for testing");
     // Try to Auto Login
     var userToken = lib.getCookie(tag_cookie_accessToken);
     var login = false;
@@ -412,8 +446,30 @@ $(document).ready(function () {
         }
     });
 
+   $("#previousPage").on('click', function() {
+       if (currentNewsPage > 1)
+       {
+           currentNewsPage -= 1;
+           updateNewsList(currentNewsPage);
+           console.log("previous currentNewsPage " + currentNewsPage);
+
+       }
+
+   });
+
+   $("#nextPage").on('click', function() {
+       if (currentNewsPage < maxNewsPage)
+       {
+           currentNewsPage += 1;
+           updateNewsList(currentNewsPage);
+           console.log("next currentNewsPage " + currentNewsPage);
+
+       }
+
+   });
 
 
-
+    updateNewsList(currentNewsPage);
+    console.log("currentNewsPage " + currentNewsPage);
 
 });

@@ -10,3 +10,7 @@ $glbDbName = 'waterhockey.sqlite';
 $glbUserTypeAdmin = 'admin';
 $glbUserTypeEditor = 'editor';
 $glbUserTypeClient = 'client';
+
+$glbNewsNumberInOnePage = 10;
+
+$TAG_page_id = 'page_id';
