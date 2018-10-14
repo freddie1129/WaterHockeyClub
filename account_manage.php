@@ -89,7 +89,7 @@
                             <button id="button_save_%u" class="btn btn-primary btn-xs save" data-dismiss="modal" %s>Save</button>
                         </label>
                         <label class="radio-inline">
-                            <button id="button_delete_%u" class="btn btn-primary btn-xs delete" data-dismiss="delete" %s>delete</button>
+                            <button id="%u" class="btn btn-primary btn-xs delete" data-dismiss="delete" %s>delete</button>
                         </label>
                 </td>
             </tr>';

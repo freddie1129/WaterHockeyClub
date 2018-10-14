@@ -284,6 +284,26 @@ function dbInsertNews($news, $user) {
     return true;
 }
 
+
+// Insert a news into news table
+function dbUpdateNews($newsId,$newsTitle,$newsContent) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('UPDATE news SET
+                                                
+                                                title = :newsTitle,
+                                                content = :newsContent
+                                    WHERE id = :newsId');
+    $statement->bindValue(':newsId', $newsId);
+    $statement->bindValue(':newsTitle', $newsTitle);
+    $statement->bindValue(':newsContent', $newsContent);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+
+
 // select all users for the user table
 function dbGetAllNews()
 {
@@ -389,7 +409,18 @@ function dbCountNews()
     }
 }
 
-
+// delete news by ID from news table
+function dbDeleteNewsById($newsID)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM news WHERE "id" = :id');
+    $statement->bindValue(':id', $newsID);
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
 
 // delete all news from news table
 function dbDeleteAllNews()
@@ -401,8 +432,6 @@ function dbDeleteAllNews()
     $db->close();
     unset($db);
 }
-
-
 
 
 ?>

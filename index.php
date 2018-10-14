@@ -178,6 +178,33 @@
             </form>
         </div>
 
+        <!-- Edit News User Modal -->
+        <div class="modal fade" id="editNewsModal" role="dialog">
+
+                <div class="modal-dialog">
+                    <input type="hidden" name="action" value="httpSignup">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Edit News</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input id="modal_newsId" type="hidden" class="form-control">
+                            <p for="newsTitle">Title:</p>
+                                <input id="modal_newsTitle" type="text" class="form-control" name="newsTitle">
+                                <p for="newsContent">Content:</p>
+                            <textarea id="modal_newsContent" type="text" class="form-control" name="newsContent" rows="20"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="update_editNews" type="submit" class="btn btn-default" data-dismiss="modal">Confirm</button>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+
+
         <!-- Edit User Modal -->
         <div class="modal fade" id="editUserModal" role="dialog">
             <form id="edit_user_form" name="httpLogin" class="js-ajax-php-json" action="action.php" method="post" accept-charset="utf-8">

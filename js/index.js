@@ -152,6 +152,61 @@ function updateNewsList(pageID)
                 maxNewsPage = data["maxPageNum"];
                 $("#newsList").append(news);
             }
+
+
+
+
+
+            $(".deleteNews").on('click', function() {
+                var news_id = $(this).parent().attr("id");
+                var res = news_id.split("_");
+                //console.log("news_id: " + Number(res[1]) );
+                var data = {"newsId" : Number(res[1]),
+                    "action" : "httpDeleteNews"};
+                console.log(data);
+                var postData = $.param(data);
+                lib.http(formURL,POST,postData,
+                    function(data, textStatus, jqXHR) {
+                    console.log(data);
+                        if(data["status"] == "success")
+                        {
+                            $(this).parent().remove();
+                            maxNewsPage = data["maxPageNum"];
+                            location.reload();
+                        }
+                        else
+                        {
+
+                        }
+                    },
+                    function(jqXHR, status, error) {
+                    console.log(status + ": " + error);
+                });
+
+
+
+
+
+
+            });
+
+            $(".editNews").on('click', function() {
+                var news_id = $(this).parent().attr("id");
+                var res = news_id.split("_");
+                var newsId = Number(res[1]);
+                var title = $("#inputNewsTitle_" + newsId).val();
+                var content = $("#inputNewsContent_" + newsId).val();
+                console.log(newsId,title,content)
+                $("#modal_newsTitle").val(title);
+                $("#modal_newsContent").html(content);
+                $("#modal_newsId").val(newsId);
+                $("#editNewsModal").modal('show');
+            });
+
+
+
+
+
         }
         else
         {
@@ -467,6 +522,38 @@ $(document).ready(function () {
        }
 
    });
+
+
+    $("#update_editNews").on('click', function() {
+        var newsId = Number($("#modal_newsId").val());
+        var newsTitle = $("#modal_newsTitle").val();
+        var newsContent = $("#modal_newsContent").val();
+        console.log(newsId,newsTitle,newsContent);
+        var data = {"newsId" : newsId,
+            "newsTitle" : newsTitle,
+            "newsContent" : newsContent,
+            "action" : "httpUpdateNews"};
+        console.log(data);
+        var postData = $.param(data);
+        console.log(postData)
+        lib.http(formURL,POST,postData,
+            function(data, textStatus, jqXHR) {
+            console.log(data);
+            if(data["status"] == "success")
+            {
+                location.reload();
+            }
+            else
+            {
+               // controlUserButtons(true,usrType);
+            }
+        },
+        function(jqXHR, status, error) {
+            console.log(status + ": " + error);
+        });
+    });
+
+
 
 
     updateNewsList(currentNewsPage);

@@ -35,6 +35,12 @@ if (isset($_POST['action']))
         case 'httpGetNewsList':
             httpGetNewsList($_POST['pageId']);
             break;
+        case 'httpDeleteNews':
+            httpDeleteNews($_POST['newsId']);
+            break;
+        case 'httpUpdateNews':
+            httpUpdateNews($_POST['newsId'],$_POST['newsTitle'],$_POST['newsContent']);
+            break;
     }
 }
 
@@ -114,6 +120,8 @@ function httpLoginByToken($userToken)
 // Handling Auto Login by access token
 function httpGetNewsList($pageId)
 {
+    
+
     global $glbNewsNumberInOnePage;
     $newCount = dbCountNews();
     if ($glbNewsNumberInOnePage * $pageId - $newCount >= $glbNewsNumberInOnePage)
@@ -130,8 +138,18 @@ function httpGetNewsList($pageId)
         for ($index = 0; $index < count($news); $index++)
         {
             $item = $news[$index];
-            $txt = sprintf("<p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
-                    <span style=\"float:right;\">%s</span></p>", $item->id,$item->title, $item->time);
+            $txt = sprintf("<div id=\"news_%u\">
+                    <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
+                    <span style=\"float:right;\">%s</span></p>
+                    <button id=\"button_edit_news_%u\" type=\"button\" class=\"editNews btn btn-primary\" data-toggle=\"modal\" >Edit</button>
+                    <button id=\"button_edit_news_%u\" type=\"button\" class=\"deleteNews btn btn-danger\" >Delete</button>
+                    <input id=\"inputNewsId_%u\" type=\"hidden\" value=\"%u\">
+                    <input id=\"inputNewsTitle_%u\" type=\"hidden\" value=\"%s\">
+                    <input id=\"inputNewsContent_%u\" type=\"hidden\" value=\"%s\">
+                    </div>",  $item->id, $item->id,$item->title, $item->time, $item->id, $item->id,
+                    $item->id,$item->id,
+                    $item->id, $item->title,
+                    $item->id, $item->content);
             array_push($htmlArray,$txt);
         }
 
@@ -143,5 +161,52 @@ function httpGetNewsList($pageId)
         echo json_encode($ret);
     }
 }
+
+//delete news
+function httpDeleteNews($newsID)
+{
+    $ret  = dbDeleteNewsById($newsID);
+    if ($ret == true)
+    {
+        global $glbNewsNumberInOnePage;
+        $newCount = dbCountNews();
+       $ret = array ( "status" => "success",
+           "maxPageNum" => round(ceil($newCount / $glbNewsNumberInOnePage)),
+            );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+            );
+        echo json_encode($ret);
+    }
+}
+
+// update news
+function httpUpdateNews($newsId, $newsTitle,$newsContent)
+{
+    $ret  = dbUpdateNews($newsId, $newsTitle,$newsContent);
+    if ($ret == true)
+    {
+        global $glbNewsNumberInOnePage;
+        $newCount = dbCountNews();
+        $ret = array ( "status" => "success",
+        );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
+
+
+
+
+
+
 
 ?>
