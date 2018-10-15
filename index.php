@@ -69,6 +69,7 @@
             <h3>News</h3>
             <div id="newsList"></div>
             <div class="container">
+                <button id="createNewNews" type="button" class="btn btn-default">New</button>
                 <button id="previousPage" type="button" class="btn btn-default">Previous</button>
                 <button id="nextPage" type="button" class="btn btn-default">Next</button>
             </div>
@@ -190,7 +191,7 @@
                             <h4 class="modal-title">Edit News</h4>
                         </div>
                         <div class="modal-body">
-                            <input id="modal_newsId" type="hidden" class="form-control">
+                            <input id="modal_newsId" type="hidden" class="form-control" value="newNews">
                             <p for="newsTitle">Title:</p>
                                 <input id="modal_newsTitle" type="text" class="form-control" name="newsTitle">
                                 <p for="newsContent">Content:</p>

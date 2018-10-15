@@ -553,6 +553,59 @@ $(document).ready(function () {
         });
     });
 
+    $("#createNewNews").on('click', function() {
+        $("#editNewsModal").modal('show');
+    });
+
+
+
+
+
+    $("#update_editNews").on('click', function() {
+
+
+        var newsIdText = $("#modal_newsId").val();
+        var newsTitle = $("#modal_newsTitle").val();
+        var newsContent = $("#modal_newsContent").val();
+        var data;
+        if (newsIdText == "newNews")
+        {
+            console.log(usrId,newsTitle,newsContent);
+            data = {
+                "userId" : usrId,
+                "newsTitle" : newsTitle,
+                "newsContent" : newsContent,
+                "action" : "httpCreateNews"};
+        }
+        else
+        {
+            data = {"newsId" : Number($("#modal_newsId").val()),
+                "newsTitle" : newsTitle,
+                "newsContent" : newsContent,
+                "action" : "httpUpdateNews"};
+        }
+
+        console.log(data);
+        var postData = $.param(data);
+        console.log(postData)
+        lib.http(formURL,POST,postData,
+            function(data, textStatus, jqXHR) {
+                console.log(data);
+                if(data["status"] == "success")
+                {
+                    //location.reload();
+                }
+                else
+                {
+                    // controlUserButtons(true,usrType);
+                    console.log(data);
+                }
+            },
+            function(jqXHR, status, error) {
+                console.log(status + ": " + error);
+            });
+    });
+
 
 
 

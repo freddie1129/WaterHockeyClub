@@ -272,13 +272,28 @@ function dbDeleteAllUser()
 function dbInsertNews($news, $user) {
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    $statement = $db->prepare('INSERT INTO "news" ("title", "time", "content","userId","author")
-    VALUES (:title, :time, :content, :userId, :author)');
+    $statement = $db->prepare('INSERT INTO "news" ("title", "time", "content","userId","author") VALUES (:title, :time, :content, :userId, :author)');
     $statement->bindValue(':title', $news->title);
     $statement->bindValue(':time', date('Y-m-d H:i:s'));
     $statement->bindValue(':content', $news->content);
     $statement->bindValue(':userId', $user->id);
     $statement->bindValue(':author', $user->username);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Insert a news into news table
+function dbInsertContentNews($newstitle,$newsContent, $userId, $username) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "news" ("title", "time", "content","userId","author")
+    VALUES (:title, :time, :content, :userId, :author)');
+    $statement->bindValue(':title', $newstitle);
+    $statement->bindValue(':time', date('Y-m-d H:i:s'));
+    $statement->bindValue(':content', $newsContent);
+    $statement->bindValue(':userId', $userId);
+    $statement->bindValue(':author', $username);
     $statement->execute();
     $db->close();
     return true;

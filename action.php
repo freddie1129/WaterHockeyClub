@@ -8,7 +8,6 @@
 require_once('libcommon.php');
 require_once('constant.php');
 
-
 header("Content-type: application/json");
 
 
@@ -41,6 +40,11 @@ if (isset($_POST['action']))
         case 'httpUpdateNews':
             httpUpdateNews($_POST['newsId'],$_POST['newsTitle'],$_POST['newsContent']);
             break;
+        case 'httpCreateNews':
+            httpCreateNews($_POST['userId'], $_POST['newsTitle'],$_POST['newsContent']);
+            break;
+
+
     }
 }
 
@@ -202,6 +206,33 @@ function httpUpdateNews($newsId, $newsTitle,$newsContent)
         echo json_encode($ret);
     }
 }
+
+// update news
+function httpCreateNews($userId, $newsTitle,$newsContent)
+{
+    $user = dbGetUserById($userId);
+    //$d = date('Y-m-d H:i:s');
+    $news = new News(0, $newsTitle, date('Y-m-d H:i:s'), $newsContent, $user->id, $user->username);
+    $ret = true;
+    //$ret =  dbInsertNews($news,$user);
+    //$ret  = dbInsertContentNews($newsTitle, $newsContent,$user->id, $user->username);
+
+    if ($ret == true)
+    {
+        $ret = array ( "status" => "success",
+            "date" => $news->title
+
+        );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
+
 
 
 
