@@ -3,6 +3,7 @@
 include_once 'libcommon.php';
 include_once 'User.php';
 include_once 'News.php';
+include_once 'Comment.php';
 
 include_once 'constant.php';
 
@@ -32,6 +33,21 @@ $db->query('CREATE TABLE IF NOT EXISTS "news" (
     FOREIGN KEY(userId) REFERENCES user(id)
 )');
 echo "<h3>Create Club news table</h3>";
+
+// Create New Comment table.
+$db->query('CREATE TABLE IF NOT EXISTS "comment" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "newsId" INTEGER NOT NULL,
+    "time" DATE,
+    "content" VARCHAR,
+    FOREIGN KEY(userId) REFERENCES user(id),
+    FOREIGN KEY(newsId) REFERENCES news(id)
+)');
+echo "<h3>Create Club comments table</h3>";
+
+
+
 
 
 // Create Club table.
@@ -65,6 +81,9 @@ $db->query('CREATE TABLE IF NOT EXISTS "match" (
     FOREIGN KEY(club_a_id) REFERENCES club(id),
     FOREIGN KEY(club_b_id) REFERENCES club(id)
 )');
+
+
+
 echo "<h3>Create match table</h3>";
 
 $db->close();
@@ -103,11 +122,40 @@ echo "<h3>Insert some news for testing</h3>";
 dbDeleteAllNews();
 $userList = dbGetAllUsers();
 $firstUser = $userList[0];
-for ($index = 0; $index < 20; $index++) {
+for ($index = 0; $index < 11; $index++) {
     $content = "Each side has 12 players, 10 of who can play in any one game. During the game 6 players are in the pool with 4 interchange players on the side who can sub at any time. The players wear large fins, a diving mask and snorkel and a thick glove made from latex to protect the hand from the pool bottom and the puck. The bats are made of wood and are about 25cm long, they usually have one straight edge for flicking the puck and the back edge is usually curved for hooking the puck. The top players can flick the puck well over 3m and it comes off the bottom enough to go over another player.";
     $news = new News(0, $title = "News of Water Hockey club (".strval($index).")", date('Y-m-d H:i:s'), $content, $firstUser->id, $firstUser->username);
     dbInsertNews($news, $firstUser);
     echo sprintf("<p>Insert news %u</p>",$index);
     echo $news;
 }
+
+echo "<h3>Insert some comments for testing</h3>";
+dbDeleteAllComment();
+$userList = dbGetAllUsers();
+$newsList = dbGetAllNews();
+$firstUser = $userList[0];
+for ($index = 0; $index < count($newsList); $index++) {
+    $news = $newsList[$index];
+    for ($i = 0; $i < count($userList); $i++)
+    {
+        $u = $userList[$i];
+        $comment = new Comment(0,$news->id,$u->id,date('Y-m-d H:i:s'),"This is a comments test (".strval($index).")");
+        dbInsertComment($comment);
+        echo sprintf("<p>Insert comment %u</p>",$index);
+        echo $comment;
+    }
+}
+
+echo "<h3>Print Comment</h3>";
+for ($index = 0; $index < count($newsList); $index++) {
+    $news = $newsList[$index];
+    $commentList = dbGetCommentByNewsId($news->id);
+    echo sprintf("<p>News %u</p>",$news->id);
+    for ($i = 0; $i < count($commentList); $i++)
+    {
+        echo $commentList[$i];
+    }
+}
+
 ?>

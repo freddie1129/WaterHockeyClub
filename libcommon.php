@@ -1,8 +1,14 @@
 <?php
 
-require_once 'constant.php';
-require_once 'User.php';
-require_once 'News.php';
+//require_once 'constant.php';
+//require_once 'User.php';
+//require_once 'News.php';
+
+include_once 'libcommon.php';
+include_once 'User.php';
+include_once 'News.php';
+include_once 'Comment.php';
+include_once 'constant.php';
 
 // Insert a user into user table
 function dbInsertUser($user) {
@@ -447,6 +453,66 @@ function dbDeleteAllNews()
     $db->close();
     unset($db);
 }
+
+
+// Insert a comment into comment table
+function dbInsertComment($comment) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "comment" ("newsId", "userId", "time","content")
+    VALUES (:newsId, :userId, :time, :content)');
+    $statement->bindValue(':newsId', $comment->newsId);
+    $statement->bindValue(':userId', $comment->userId);
+    $statement->bindValue(':time', date('Y-m-d H:i:s'));
+    $statement->bindValue(':content', $comment->content);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Get a comment by newsId
+function dbGetCommentByNewsId($newId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "comment" WHERE "newsId" = :newsId ORDER BY "time"');
+    $statement->bindValue(':newsId', $newId);
+    $result = $statement->execute();
+
+    $commentList = array();
+    while($row = $result->fetchArray()) {
+        $comment = new Comment($row["id"],$row["newsId"],$row["userId"],$row["time"],$row["content"]);
+        array_push($commentList,$comment);
+    }
+    $db->close();
+    return $commentList;
+
+}
+
+// Delete a comment by newsId
+function dbDeleteCommentById($commentId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM comment WHERE "id" = :id');
+    $statement->bindValue(':id', $commentId);
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Delete all comments
+function dbDeleteAllComment() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM comment');
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
 
 
 ?>

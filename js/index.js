@@ -1,6 +1,8 @@
 import * as lib from './lib.js';
 
 var tag_cookie_accessToken = "accessToken";
+var tag_cookie_userId = "userId";
+
 var formURL = "action.php";
 var POST = "POST"
 var GET = "GET"
@@ -96,6 +98,8 @@ function loginByName(username, password)
                 controlUserButtons(true,usrType);
                 $('#txUsername').html(usrName);
                 lib.setCookie(tag_cookie_accessToken,data.user.accessToken,30);
+                lib.setCookie(tag_cookie_userId,data.user.userId,30);
+
             }
             else
             {
@@ -139,6 +143,7 @@ function controlUserButtons(islogin,userType)
 function updateNewsList(pageID)
 {
     var data = {"pageId" : pageID,
+        "userId" : usrId,
         "action" : "httpGetNewsList"};
     var postData = $.param(data);
     lib.http(formURL,POST,postData,function(data, textStatus, jqXHR) {
@@ -327,7 +332,9 @@ $(document).ready(function () {
                     usrPassword = data.user.password;
                     controlUserButtons(true,usrType);
                     $('#txUsername').html(usrName);
-                    lib.setCookie(tag_cookie_accessToken,data.user.$accessToken,30);
+                    lib.setCookie(tag_cookie_accessToken,data.user.accessToken,30);
+                    lib.setCookie(tag_cookie_userId,data.user.userId,30);
+
                 }
                 else
                 {
@@ -593,7 +600,46 @@ $(document).ready(function () {
                 console.log(data);
                 if(data["status"] == "success")
                 {
-                    //location.reload();
+                    location.reload();
+                }
+                else
+                {
+                    // controlUserButtons(true,usrType);
+                    console.log(data);
+                }
+            },
+            function(jqXHR, status, error) {
+                console.log(status + ": " + error);
+            });
+    });
+
+    $("#add_button_comment").on('click', function() {
+
+        var userToken = lib.getCookie(tag_cookie_userId);
+        console.log(userToken);
+
+        var newsId = Number($("#news_id").val());
+        var commentContent = $("#edit_news_comment").val();
+
+        var data;
+
+            console.log(usrId,newsId,commentContent);
+            data = {
+                "newsId" : newsId,
+                "userId" : usrId,
+                "content" : commentContent,
+                "action" : "httpAddComment"};
+
+
+        console.log(data);
+        var postData = $.param(data);
+        console.log(postData)
+        lib.http(formURL,POST,postData,
+            function(data, textStatus, jqXHR) {
+                console.log(data);
+                if(data["status"] == "success")
+                {
+                    location.reload();
                 }
                 else
                 {

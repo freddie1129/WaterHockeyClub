@@ -14,6 +14,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/index.css">
 
+
+
 </head>
 <body>
 
@@ -58,15 +60,43 @@
     <div class="row content">
 
         <div class="col-sm-8 text-left">
+
             <?php
             require_once('libcommon.php');
+            require_once('constant.php');
             $newId = $_GET["newId"];
             $news = dbGetNewsById($newId);
+            echo sprintf("<div id=\"news\">");
             echo sprintf("<h1 style=\"text-align:center;\">%s</h1>",$news->title);
             echo sprintf("<p style=\"text-align:center;\">%s</p>",$news->time);
             echo sprintf("<p>%s</p>",$news->content);
             echo sprintf("<p style=\"text-align:right;\">(Editor:%s)</p>",$news->author);
+            echo sprintf("</div>");
+            echo sprintf("<div id=\"comments\">");
+            echo sprintf("<h3 style=\"text-align:left;\">Comment</h3>");
+
+            echo sprintf('<input id="news_id" type="hidden" name="action" value="%u">',$newId);
+            echo '<div style="width:100%;"><textarea id="edit_news_comment" type="text" style="width:100%;" rows="5"></textarea></div>';
+            echo '<div align="right">';
+            echo '<button id="add_button_comment" align="right" type="button" class="btn btn-primary" data-toggle="modal" >Add A Comment</button>';
+            echo '</div>';
+
+
+
+            $commentList = dbGetCommentByNewsId($newId);
+            for ($index = 0; $index < count($commentList); $index++)
+            {
+                $comment = $commentList[$index];
+                $user = dbGetUserById($comment->userId);
+                $format = '<p style="text-align:left;">%s<span style="float:right;">%s</span></p><p>%s</p>';
+                echo sprintf($format,$user->username,$comment->time,$comment->content);
+            }
+            echo sprintf("</div>");
+
             ?>
+
+
+
         </div>
         <div class="col-sm-4 sidenav">
             <?php

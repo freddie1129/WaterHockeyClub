@@ -5,8 +5,14 @@
  * Date: 16/09/18
  * Time: 12:57 PM
  */
-require_once('libcommon.php');
-require_once('constant.php');
+//require_once('libcommon.php');
+//require_once('constant.php');
+
+include_once 'libcommon.php';
+include_once 'User.php';
+include_once 'News.php';
+include_once 'constant.php';
+
 
 header("Content-type: application/json");
 
@@ -32,7 +38,7 @@ if (isset($_POST['action']))
         case 'httpChangeUserType':
             httpDeleteUser($_POST['userId'],$_POST['userType']);
         case 'httpGetNewsList':
-            httpGetNewsList($_POST['pageId']);
+            httpGetNewsList($_POST['pageId'],$_POST['userId']);
             break;
         case 'httpDeleteNews':
             httpDeleteNews($_POST['newsId']);
@@ -43,8 +49,9 @@ if (isset($_POST['action']))
         case 'httpCreateNews':
             httpCreateNews($_POST['userId'], $_POST['newsTitle'],$_POST['newsContent']);
             break;
-
-
+        case 'httpAddComment':
+            httpAddComment($_POST['newsId'], $_POST['userId'],$_POST['content']);
+            break;
     }
 }
 
@@ -122,7 +129,7 @@ function httpLoginByToken($userToken)
 }
 
 // Handling Auto Login by access token
-function httpGetNewsList($pageId)
+function httpGetNewsList($pageId,$userId)
 {
     
 
@@ -143,14 +150,14 @@ function httpGetNewsList($pageId)
         {
             $item = $news[$index];
             $txt = sprintf("<div id=\"news_%u\">
-                    <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u\">%s</a>
+                    <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u&userId=%u\">%s</a>
                     <span style=\"float:right;\">%s</span></p>
                     <button id=\"button_edit_news_%u\" type=\"button\" class=\"editNews btn btn-primary\" data-toggle=\"modal\" >Edit</button>
                     <button id=\"button_edit_news_%u\" type=\"button\" class=\"deleteNews btn btn-danger\" >Delete</button>
                     <input id=\"inputNewsId_%u\" type=\"hidden\" value=\"%u\">
                     <input id=\"inputNewsTitle_%u\" type=\"hidden\" value=\"%s\">
                     <input id=\"inputNewsContent_%u\" type=\"hidden\" value=\"%s\">
-                    </div>",  $item->id, $item->id,$item->title, $item->time, $item->id, $item->id,
+                    </div>",  $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
                     $item->id,$item->id,
                     $item->id, $item->title,
                     $item->id, $item->content);
@@ -214,13 +221,17 @@ function httpCreateNews($userId, $newsTitle,$newsContent)
     //$d = date('Y-m-d H:i:s');
     $news = new News(0, $newsTitle, date('Y-m-d H:i:s'), $newsContent, $user->id, $user->username);
     $ret = true;
-    //$ret =  dbInsertNews($news,$user);
+    $ret =  dbInsertNews($news,$user);
     //$ret  = dbInsertContentNews($newsTitle, $newsContent,$user->id, $user->username);
 
     if ($ret == true)
     {
         $ret = array ( "status" => "success",
-            "date" => $news->title
+            "title" => $news->title,
+            "content" => $news->time,
+            "id" =>$news->content,
+            "author" => $user->username
+
 
         );
         echo json_encode($ret);
@@ -233,6 +244,29 @@ function httpCreateNews($userId, $newsTitle,$newsContent)
     }
 }
 
+// update news
+function httpAddComment($newsId, $userId, $content)
+{
+    //$user = dbGetUserById($userId);
+    $comment = new Comment(0,$newsId,$userId,date('Y-m-d H:i:s'),$content);
+    $ret = dbInsertComment($comment);
+    //$ret = true;
+    if ($ret == true)
+    {
+        $ret = array ( "status" => "success",
+            "title" => $newsId,
+            "content" => $userId,
+            "id" =>$content,
+        );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
 
 
 
