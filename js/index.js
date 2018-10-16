@@ -98,7 +98,7 @@ function loginByName(username, password)
                 controlUserButtons(true,usrType);
                 $('#txUsername').html(usrName);
                 lib.setCookie(tag_cookie_accessToken,data.user.accessToken,30);
-                lib.setCookie(tag_cookie_userId,data.user.userId,30);
+                lib.setCookie(tag_cookie_userId,usrId,30);
 
             }
             else
@@ -333,7 +333,7 @@ $(document).ready(function () {
                     controlUserButtons(true,usrType);
                     $('#txUsername').html(usrName);
                     lib.setCookie(tag_cookie_accessToken,data.user.accessToken,30);
-                    lib.setCookie(tag_cookie_userId,data.user.userId,30);
+                    lib.setCookie(tag_cookie_userId,usrId,30);
 
                 }
                 else
@@ -615,7 +615,7 @@ $(document).ready(function () {
 
     $("#add_button_comment").on('click', function() {
 
-        var userToken = lib.getCookie(tag_cookie_userId);
+        var userId = lib.getCookie(tag_cookie_userId);
         console.log(userToken);
 
         var newsId = Number($("#news_id").val());
@@ -626,7 +626,7 @@ $(document).ready(function () {
             console.log(usrId,newsId,commentContent);
             data = {
                 "newsId" : newsId,
-                "userId" : usrId,
+                "userId" : userId,
                 "content" : commentContent,
                 "action" : "httpAddComment"};
 
