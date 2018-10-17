@@ -11,23 +11,40 @@ include 'constant.php';
 
 global $glbDbName;
 
-$db = new SQLite3('$glbDbName', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-
-$now = date('Y-m-d H:i:s');
-echo $now;
-echo "<br>";
-
-$newDate = date("Y-m-d", strtotime($now));
-
-echo $newDate;
-
-$news = dbSearchNews("","2018-09-01", $newDate);
 
 
-echo "<p>Print News</p>";
-for ($i = 0;$i < count($news); $i++)
+// Create Team member table.
+$db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+
+// Create Match table.
+$db->query('CREATE TABLE IF NOT EXISTS "match" (
+    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    "time" DATE,
+    "location" VARCHAR,
+    "teamA" INTEGER,
+    "teamB" INTEGER,
+    "status" VARCHAR,
+    "scoreA" VARCHAR,
+    "scoreB" VARCHAR,
+    FOREIGN KEY(teamA) REFERENCES team(id),
+    FOREIGN KEY(teamB) REFERENCES team(id)
+)');
+
+echo "<h3>Insert some Member for testing</h3>";
+$teamList = dbGetAllTeams();
+for ($index = 0 ; $index < count($teamList); $index++)
 {
-    echo $news[$i];
+    $team = $teamList[$index];
+    for ($i = 0; $i < 10; $i++)
+    {
+        $member = new Member(0,"firstName".strval($i),"LastName".strval($i),
+            "nickName".strval($i),"male",date('Y-m-d'),$team->id,$team->name);
+        dbInsertMember($member);
+    }
 }
+
+
+$db->close();
+
 
 ?>

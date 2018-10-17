@@ -48,33 +48,93 @@
 <div class="container-fluid">
     <div class="container">
         <br/>
-        <h4 style="margin-bottom: 20px;"><b>Please set some search conditions to search your interesting Teams. </b></h4>
         <?php
             require_once('libcommon.php');
             require_once ('constant.php');
             global $glbUserTypeAdmin;
             global $glbUserTypeEditor;
             global $glbUserTypeClient;
-            if (isset($_GET["keywords"]))
+            if (isset($_GET["teamId"]))
             {
-                $keywords = $_GET["keywords"];
+                $teamId = $_GET["teamId"];
+            }
+            if (isset($_COOKIE["userId"]))
+            {
+                $showAction = false;
+                $userId = $_COOKIE["userId"];
+                $user = dbGetUserById($userId);
+                if ($user != false) {
+                    if ($user->userType == $glbUserTypeAdmin | $user->userType == $glbUserTypeEditor) {
+                        $showAction = true;
+                    }
+                }
             }
             else
             {
-                $keywords="";
+                $showAction = false;
             }
 
-            $searchFormat =  '
-        <div class="input-group" style="margin-bottom: 10px">
-            <input id="id_search_team_keywords" type="text" class="form-control" value="%s" placeholder="Input some keywords about your interesting team.">
-            <span class="input-group-btn">
-                    <button id="id_search_team" class="btn btn-default" type="button">Search</button>
-            </span>
-        </div>';
-            echo sprintf($searchFormat,$keywords);
-            $rowformat = '<tr valign="middle" >
+
+
+           $team = dbGetTeamById($teamId);
+
+            echo sprintf(' <input id="input_team_id" type="hidden" value="%u">', $teamId);
+
+            echo sprintf('<h2><b id="input_team_name">%s</b></h2>',$team->name);
+            echo '<div class="well">';
+            echo sprintf("<p><b>Location:</b>%s</p>",$team->location);
+            echo sprintf("<p><b>Establish Year:</b>%s</p>",$team->establishTime);
+            echo sprintf("<p><b>Caption:</b>%s</p>",$team->captionName);
+            echo sprintf("<p><b>Introduction:</b>%s</p>",$team->intro);
+            echo '</div>';
+            if ($showAction == true) {
+                echo '<button id="createNewMember" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px; float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Add a new member</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
+';
+            }
+            $memberList = dbGetTeamMember($teamId);
+            for ($i = 0; $i < count($memberList); $i++)
+            {
+                $mem = $memberList[$i];
+
+
+
+               echo sprintf('<div class="container-fluid" style="clear: both">
+  <div class="row well" style="margin-bottom: 10px; background-color: lavenderblush">
+    <div class="col-sm-1">
+      <img src="img/no_profile_pic.png" class="img-responsive" alt="Cinque Terre">
+    </div>
+    <div class="col-sm-11" >
+      <p style="font-size: large"><b>%s&nbsp;&nbsp;%s</b></p>
+      <p><b>Nick Name:</b>&nbsp;%s</p>
+      <p><b>Gender:</b>&nbsp;%s</p>
+      <p><b>Birthday:</b>&nbsp;%s</p>',$mem->firstName, $mem->lastName, $mem->nickName, $mem->gender, $mem->birthday);
+              if ($showAction == true){
+               echo sprintf('
+                    <button id="edit_member_%u" type="button" class="btn btn-primary edit_member" data-toggle="modal" style="margin-bottom: 2px; margin-right: 10px; float: left;">&nbsp;&nbsp;Edit&nbsp;&nbsp;</button>
+                    <button id="delete_member_%u" type="button" class="btn btn-danger delete_member" data-toggle="modal" style="margin-bottom: 2px; clear: both ">Delete</button>
+                    <input id="inputMemberId_%u" type="hidden" value="%u">
+                    <input id="inputMemberFristName_%u" type="hidden" value="%s">
+                    <input id="inputMemberLastName_%u" type="hidden" value="%s">
+                    <input id="inputMemberNickName_%u" type="hidden" value="%s">
+                    <input id="inputMemberGender_%u" type="hidden" value="%s">
+                    <input id="inputMemberBirthday_%u" type="hidden" value="%s">',$mem->id,$mem->id,$mem->id,$mem->id,
+                   $mem->id, $mem->firstName,
+                   $mem->id, $mem->lastName,
+                   $mem->id, $mem->nickName,
+                   $mem->id, $mem->gender,
+                   $mem->id, $mem->birthday);
+              }
+
+               echo '
+    </div>
+  </div>
+</div>';
+
+            }
+
+ /*           $rowformat = '<tr valign="middle" >
                 <td class="col-md-1  text-center" >%u</td>
-                <td class="col-md-4  text-center"><a id="team_name_%u"  href="team_detail.php?teamId=%u">%s</a></td>
+                <td class="col-md-4  text-center"><a id="team_name_%u"  href="team.php?teamId=%u">%s</a></td>
                 <td class="col-md-3  text-center">%s</td>
                 <td class="col-md-2  text-center">%s</td>
                 <td class="col-md-2  text-center">
@@ -124,14 +184,13 @@
                     echo $txt;
                 }
                echo  '</tbody> </table>';
-            }
+            }*/
             ?>
-        <button id="createNewTeam" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Create New Team</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
     </div>
 
     <div class="container">
         <!-- Edit News interface -->
-        <div class="modal fade" id="editTeamModal" role="dialog">
+        <div class="modal fade" id="editMemberModal" role="dialog">
             <div class="modal-dialog">
                 <input type="hidden" name="action" value="httpSignup">
                 <!-- Modal content-->
@@ -141,25 +200,31 @@
                         <h4 id="edit_dialog_title" class="modal-title" style="text-align: center"><b>Edit News</b></h4>
                     </div>
                     <div class="modal-body">
-                        <input id="modal_teamId" type="hidden" class="form-control" value="newNews">
-                        <p><b>Team Name:</b></p>
-                        <input id="modal_teamName" type="text" class="form-control">
-                        <p style="margin-top: 10px;"><b>Team Location:</b></p>
-                        <input id="modal_teamLocation" type="text" class="form-control">
-                        <p style="margin-top: 10px;"><b>Establish Time:</b></p>
-                        <input id="modal_teamEstablishTime" type="text" class="form-control">
-                        <p style="margin-top: 10px;"><b>Caption Name:</b></p>
-                        <input id="modal_teamCaptionName" type="text" class="form-control">
-                        <p style="margin-top: 10px;"><b>Team Introduction:</b></p>
-                        <textarea id="modal_teamIntroduction" type="text" class="form-control"
-                                  rows="20"></textarea>
-
+                        <input id="modal_member_id" type="hidden" class="form-control" value="newNews">
+                        <p><b>First Name:</b></p>
+                        <input id="modal_first_name" type="text" class="form-control">
+                        <p style="margin-top: 10px;"><b>Last Name:</b></p>
+                        <input id="modal_last_name" type="text" class="form-control">
+                        <p style="margin-top: 10px;"><b>Nick Name:</b></p>
+                        <input id="modal_nick_name" type="text" class="form-control">
+                        <p style="margin-top: 10px;"><b>Gender:</b></p>
+                        <label class="radio-inline">
+                            <input id="modal_gender_male" type="radio" name="optradio" value="male" checked>Male
+                        </label>
+                        <label class="radio-inline">
+                            <input id="modal_gender_female" type="radio" name="optradio" value="female">Female
+                        </label>
+                        <label class="radio-inline">
+                            <input id="modal_gender_other" type="radio" name="optradio" value="other">Other
+                        </label>
+                        <p style="margin-top: 10px;"><b>Birthday:</b></p>
+                        <input id="modal_birthday" type="date">
                     </div>
                     <div class="modal-footer">
-                        <button id="update_editTeam" type="submit" class="btn btn-primary" >
+                        <button id="modal_update" type="submit" class="btn btn-primary" >
                             &nbsp;&nbsp; Confirm &nbsp;&nbsp;
                         </button>
-                        <button id="create_editTeam" type="submit" class="btn btn-primary" >
+                        <button id="modal_create" type="submit" class="btn btn-primary" >
                             &nbsp;&nbsp; Post &nbsp;&nbsp;
                         </button>
                     </div>
@@ -181,7 +246,7 @@
 
 
 
-<script src="js/team_mamage.js" type="module"></script>
+<script src="js/team_detail.js" type="module"></script>
 
 
 

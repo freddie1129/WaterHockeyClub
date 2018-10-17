@@ -606,6 +606,28 @@ function dbGetAllTeams() {
     return $list;
 }
 
+// Get Team by Id
+function dbGetTeamById($teamId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "team" where "id" = :teamId');
+    $statement->bindValue(':teamId',$teamId);
+    $result = $statement->execute();
+    if ($row = $result->fetchArray())
+    {
+        $item = new Team($row["id"],$row["name"],$row["location"],$row["establishTime"],$row["captionName"],$row["intro"]);
+        $db->close();
+        return $item;
+    }
+    else
+    {
+        $db->close();
+        return 0;
+    }
+}
+
+
+
 // search teams by keywords
 function dbSearchTeam($keywords)
 {
@@ -623,8 +645,6 @@ function dbSearchTeam($keywords)
     $db->close();
     return $list;
 }
-
-
 
 
 
@@ -696,7 +716,7 @@ function dbDeleteMemberById($memberId) {
 function dbUpdateMember($id,$firstName,$lastName, $nickName, $gender, $birthday, $teamId, $teamName) {
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    $statement = $db->prepare('UPDATE team SET
+    $statement = $db->prepare('UPDATE member SET
                                                 firstName = :firstName,
                                                 lastName = :lastName,
                                                 nickName = :nickName,

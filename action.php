@@ -62,6 +62,16 @@ if (isset($_POST['action']))
         case 'httpCreateTeam':
             httpCreateTeam($_POST['teamName'], $_POST['teamLocation'],$_POST['teamEstablishTime'],$_POST['teamCaptionName'],$_POST['teamIntroduction']);
             break;
+
+        case 'httpUpdateMember':
+            httpUpdateMember($_POST['id'], $_POST['firstName'], $_POST['lastName'],$_POST['nickName'],$_POST['gender'],$_POST['birthday'],$_POST['teamId'],$_POST['teamName']);
+            break;
+        case 'httpCreateMember':
+            httpCreateMember($_POST['firstName'], $_POST['lastName'],$_POST['nickName'],$_POST['gender'],$_POST['birthday'],$_POST['teamId'],$_POST['teamName']);
+            break;
+        case 'httpDeleteMember':
+            httpDeleteMember($_POST['id']);
+            break;
     }
 }
 
@@ -352,7 +362,64 @@ function httpDeleteTeam($teamId)
     }
 }
 
+// Create a team
+function httpCreateMember($firstName,$lastName,$nickName,$gender,$birthday,$teamId, $teamName)
+{
+    if (is_null($firstName) | strlen($firstName) == 0 )
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
 
+
+    $newMember = new Member(0,$firstName,$lastName,$nickName,$gender,$birthday,$teamId, $teamName);
+    dbInsertMember($newMember);
+    $ret = array ( "status" => "success",
+        "ad" => $newMember->birthday,
+    );
+    echo json_encode($ret);
+}
+
+// Create a team
+function httpUpdateMember($id, $firstName,$lastName,$nickName,$gender,$birthday,$teamId, $teamName)
+{
+    if (is_null($firstName) | strlen($firstName) == 0 )
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    dbUpdateMember($id, $firstName,$lastName,$nickName,$gender,$birthday,$teamId, $teamName);
+    $ret = array ( "status" => "success",
+
+    );
+    echo json_encode($ret);
+}
+
+
+function httpDeleteMember($id)
+{
+    if (is_null($id))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    $ret  = dbDeleteMemberById($id);
+    if ($ret == true)
+    {
+        $ret = array ( "status" => "success",
+        );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
 
 
 

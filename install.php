@@ -71,7 +71,7 @@ $db->query('CREATE TABLE IF NOT EXISTS "member" (
     "birthday" DATE,
     "teamId" INTEGER,
     "teamName" VARCHAR,
-    FOREIGN KEY($teamId) REFERENCES team(id)
+    FOREIGN KEY(teamId) REFERENCES team(id)
 )');
 echo "<h3>Create Team member table</h3>";
 
@@ -86,8 +86,8 @@ $db->query('CREATE TABLE IF NOT EXISTS "match" (
     "status" VARCHAR,
     "scoreA" VARCHAR,
     "scoreB" VARCHAR,
-    FOREIGN KEY($teamA) REFERENCES team(id),
-    FOREIGN KEY($teamA) REFERENCES team(id)
+    FOREIGN KEY(teamA) REFERENCES team(id),
+    FOREIGN KEY(teamB) REFERENCES team(id)
 )');
 
 
@@ -175,5 +175,19 @@ for ($index = 0; $index < 20; $index++) {
         "Introduction   ".strval($index));
     dbInsertTeam($t);
 }
+
+echo "<h3>Insert some Member for testing</h3>";
+$teamList = dbGetAllTeams();
+for ($index = 0 ; $index < count($teamList); $index++)
+{
+    $team = $teamList[$index];
+    for ($i = 0; $i < 10; $i++)
+    {
+        $member = new Member(0,"firstName".strval($i),"LastName".strval($i),
+            "nickName".strval($i),"male",date('Y-m-d'),$team->id,$team->name);
+        dbInsertMember($member);
+    }
+}
+
 
 ?>
