@@ -53,6 +53,15 @@ if (isset($_POST['action']))
         case 'httpAddComment':
             httpAddComment($_POST['newsId'], $_POST['userId'],$_POST['content']);
             break;
+        case 'httpDeleteTeam':
+            httpDeleteTeam($_POST['teamId']);
+            break;
+        case 'httpUpdateTeam':
+            httpUpdateTeam($_POST['teamId'],$_POST['teamName'], $_POST['teamLocation'],$_POST['teamEstablishTime'],$_POST['teamCaptionName'],$_POST['teamIntroduction']);
+            break;
+        case 'httpCreateTeam':
+            httpCreateTeam($_POST['teamName'], $_POST['teamLocation'],$_POST['teamEstablishTime'],$_POST['teamCaptionName'],$_POST['teamIntroduction']);
+            break;
     }
 }
 
@@ -268,6 +277,82 @@ function httpAddComment($newsId, $userId, $content)
         echo json_encode($ret);
     }
 }
+
+// Create a team
+function httpCreateTeam($teamName,$teamLocation,$teamEstablishTime,$teamCaptionName,$teamIntroduction)
+{
+    if (is_null($teamName) | strlen($teamName) == 0 )
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    if (is_null($teamLocation) | strlen($teamLocation) == 0 )
+    {
+        $teamLocation="";
+    }
+    if (is_null($teamEstablishTime) | strlen($teamEstablishTime) == 0 )
+    {
+        $teamEstablishTime="";
+    }
+    if (is_null($teamCaptionName) | strlen($teamCaptionName) == 0 )
+    {
+        $teamCaptionName="";
+    }
+    if (is_null($teamIntroduction) | strlen($teamIntroduction) == 0 )
+    {
+        $teamIntroduction="";
+    }
+    $newTeam = new Team(0, $teamName,$teamLocation,$teamEstablishTime,$teamCaptionName,$teamIntroduction);
+    dbInsertTeam($newTeam);
+    $ret = array ( "status" => "success",
+    );
+    echo json_encode($ret);
+}
+
+// Create a team
+function httpUpdateTeam($teadId,$teamName,$teamLocation,$teamEstablishTime,$teamCaptionName,$teamIntroduction)
+{
+    if (is_null($teadId))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    dbUpdateTeam($teadId,$teamName,$teamLocation,$teamEstablishTime,$teamCaptionName,$teamIntroduction);
+    $ret = array ( "status" => "success",
+    );
+    echo json_encode($ret);
+}
+
+
+
+
+//delete a team
+function httpDeleteTeam($teamId)
+{
+    if (is_null($teamId))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    $ret  = dbDeleteTeamById($teamId);
+    if ($ret == true)
+    {
+        $ret = array ( "status" => "success",
+                    );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
+
+
 
 
 

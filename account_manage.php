@@ -34,7 +34,7 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="index.php">Home</a></li>
                 <li><a href="#">About</a></li>
-                <li><a href="#">Team</a></li>
+                <li><a href="/team_manage.php">Team</a></li>
                 <li><a href="#">Match</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>

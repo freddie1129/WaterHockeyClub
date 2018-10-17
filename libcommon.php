@@ -7,6 +7,9 @@
 include_once 'libcommon.php';
 include_once 'User.php';
 include_once 'News.php';
+include_once 'Team.php';
+include_once 'Member.php';
+include_once 'Match.php';
 include_once 'Comment.php';
 include_once 'constant.php';
 
@@ -510,8 +513,6 @@ function dbInsertComment($comment) {
 function dbGetCommentByNewsId($newId) {
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    global $glbDbName;
-    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
     $statement = $db->prepare('SELECT * FROM "comment" WHERE "newsId" = :newsId ORDER BY "time" DESC ');
     $statement->bindValue(':newsId', $newId);
     $result = $statement->execute();
@@ -550,5 +551,306 @@ function dbDeleteAllComment() {
 }
 
 
+// Insert a team into team table
+function dbInsertTeam($team) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "team" ("name", "location", "establishTime","captionName","intro")
+    VALUES (:name, :location, :establishTime, :captionName, :intro)');
+    $statement->bindValue(':name', $team->name);
+    $statement->bindValue(':location', $team->location);
+    $statement->bindValue(':establishTime', $team->establishTime);
+    $statement->bindValue(':captionName', $team->captionName);
+    $statement->bindValue(':intro', $team->captionName);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteAllTeam() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM team');
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteTeamById($teamId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM team where "id" = :id');
+    $statement->bindValue(':id', $teamId);
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+
+// Get All Team From Team Table
+function dbGetAllTeams() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "team"');
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Team($row["id"],$row["name"],$row["location"],$row["establishTime"],$row["captionName"],$row["intro"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
+
+// search teams by keywords
+function dbSearchTeam($keywords)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $sqlStatment = 'SELECT * FROM team WHERE name LIKE "%%%s%%" OR location LIKE "%%%s%%" OR captionName LIKE "%%%s%%" OR intro LIKE "%%%s%%"';
+    $sqlStatment = sprintf($sqlStatment,$keywords,$keywords,$keywords,$keywords);
+    $statement = $db->prepare($sqlStatment);
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Team($row["id"],$row["name"],$row["location"],$row["establishTime"],$row["captionName"],$row["intro"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
+
+
+
+
+
+// Update team
+function dbUpdateTeam($teamId,$teamName,$teamLocation, $establishTime, $captionName, $intro) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('UPDATE team SET
+                                                name = :teamName,
+                                                location = :teamLocation,
+                                                establishTime = :establishTime,
+                                                captionName = :captionName,
+                                                intro = :intro
+                                    WHERE id = :teamId');
+    $statement->bindValue(':teamId', $teamId);
+    $statement->bindValue(':teamName', $teamName);
+    $statement->bindValue(':teamLocation', $teamLocation);
+    $statement->bindValue(':establishTime', $establishTime);
+    $statement->bindValue(':captionName', $captionName);
+    $statement->bindValue(':intro', $intro);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+
+// Insert a team into team table
+function dbInsertMember($member) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "member" ("firstName", "lastName", "nickName","gender","birthday","teamId","teamName")
+    VALUES (:firstName,:lastName,:nickName,:gender,:birthday,:teamId,:teamName)');
+    $statement->bindValue(':firstName', $member->firstName);
+    $statement->bindValue(':lastName', $member->lastName);
+    $statement->bindValue(':nickName', $member->nickName);
+    $statement->bindValue(':gender', $member->gender);
+    $statement->bindValue(':birthday', $member->birthday);
+    $statement->bindValue(':teamId', $member->teamId);
+    $statement->bindValue(':teamName', $member->teamName);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteAllMember() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM member');
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteMemberById($memberId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM member where "id" = :id');
+    $statement->bindValue(':id', $memberId);
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Update team
+function dbUpdateMember($id,$firstName,$lastName, $nickName, $gender, $birthday, $teamId, $teamName) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('UPDATE team SET
+                                                firstName = :firstName,
+                                                lastName = :lastName,
+                                                nickName = :nickName,
+                                                gender = :gender,
+                                                birthday = :birthday,
+                                                teamId = :teamId,
+                                                teamName = :teamName
+                                    WHERE id = :id');
+    $statement->bindValue(':id', $id);
+    $statement->bindValue(':firstName', $firstName);
+    $statement->bindValue(':lastName', $lastName);
+    $statement->bindValue(':nickName', $nickName);
+    $statement->bindValue(':gender', $gender);
+    $statement->bindValue(':birthday', $birthday);
+    $statement->bindValue(':teamId', $teamId);
+    $statement->bindValue(':teamName', $teamName);
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Get All Member From Member Table
+function dbGetAllMember() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "member"');
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Member($row["id"],$row["firstName"],$row["lastName"],$row["nickName"],$row["gender"],$row["birthday"],$row["teamId"],$row["teamName"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
+
+
+// Get All Member in a Team From Member Table
+function dbGetTeamMember($teamId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "member" where "teamId" = :teamId');
+    $statement->bindValue(':teamId', $teamId);
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Member($row["id"],$row["firstName"],$row["lastName"],$row["nickName"],$row["gender"],$row["birthday"],$row["teamId"],$row["teamName"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
+
+// Match
+// Insert a team into team table
+function dbInsertMatch($match) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('INSERT INTO "match" ("time", "location","teamA","teamB","status","scoreA","scoreB")
+    VALUES (:time,:location,:teamA,:teamB,:status,:scoreA,:scoreB)');
+    $statement->bindValue(':time', $match->time);
+    $statement->bindValue(':location', $match->location);
+    $statement->bindValue(':teamA', $match->teamA);
+    $statement->bindValue(':teamB', $match->teamB);
+    $statement->bindValue(':status', $match->status);
+    $statement->bindValue(':scoreA', $match->scoreA);
+    $statement->bindValue(':scoreB', $match->scoreB);
+
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteAllMatch() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM match');
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Delete all team from the team table
+function dbDeleteMatchById($id) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('DELETE FROM match where "id" = :id');
+    $statement->bindValue(':id', $id);
+    $statement->execute();
+    $db->close();
+    unset($db);
+    return true;
+}
+
+// Update match
+function dbUpdateMatch($id,$time,$location, $teamA, $teamB, $status, $scoreA, $scoreB) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('UPDATE team SET
+                                                time = :time,
+                                                location = :location,
+                                                teamA = :teamA,
+                                                teamB = :teamB,
+                                                status = :status,
+                                                scoreA = :scoreA
+                                                scoreB = :scoreB
+                                    WHERE id = :id');
+    $statement->bindValue(':id', $id);
+    $statement->bindValue(':time', $time);
+    $statement->bindValue(':location', $location);
+    $statement->bindValue(':teamA', $teamA);
+    $statement->bindValue(':teamB', $teamB);
+    $statement->bindValue(':status', $status);
+    $statement->bindValue(':scoreA', $scoreA);
+    $statement->bindValue(':scoreB', $scoreB);
+
+    $statement->execute();
+    $db->close();
+    return true;
+}
+
+// Get All Member From Member Table
+function dbGetAllMatch() {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "match"');
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Match($row["id"],$row["time"],$row["location"],$row["teamA"],$row["teamB"],$row["status"],$row["scoreA"],$row["scoreB"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
+
+// Get All Member in a Team From Member Table
+function dbGetMatchByTeam($teamId) {
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+    $statement = $db->prepare('SELECT * FROM "match" WHERE "teamA" = :teamId OR "teamB" = :teamId');
+    $statement->bindValue(':teamId', $teamId);
+    $result = $statement->execute();
+    $list = array();
+    while($row = $result->fetchArray()) {
+        $item = new Match($row["id"],$row["time"],$row["location"],$row["teamA"],$row["teamB"],$row["status"],$row["scoreA"],$row["scoreB"]);
+        array_push($list,$item);
+    }
+    $db->close();
+    return $list;
+}
 
 ?>

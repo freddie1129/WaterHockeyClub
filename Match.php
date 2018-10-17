@@ -6,165 +6,41 @@
  * Time: 11:44 PM
  */
 
-class User
+class Match
 {
+
     var $id;
-    var $username;
-    var $password;
-    var $emailAddress;
-    var $accessToken;
-    var $userType;
     var $time;
+    var $location;
+    var $teamA;
+    var $teamB;
+    var $status;
+    var $scoreA;
+    var $scoreB;
 
     /**
-     * User constructor.
+     * Match constructor.
      * @param $id
-     * @param $username
-     * @param $password
-     * @param $emailAddress
-     * @param $accessToken
-     * @param $userType
      * @param $time
+     * @param $location
+     * @param $teamA
+     * @param $teamB
+     * @param $status
+     * @param $scoreA
+     * @param $scoreB
      */
-    public function __construct($id, $username, $password, $emailAddress, $accessToken, $userType, $time)
+    public function __construct($id, $time, $location, $teamA, $teamB, $status, $scoreA, $scoreB)
     {
         $this->id = $id;
-        $this->username = $username;
-        $this->password = $password;
-        $this->emailAddress = $emailAddress;
-        $this->accessToken = $accessToken;
-        $this->userType = $userType;
         $this->time = $time;
+        $this->location = $location;
+        $this->teamA = $teamA;
+        $this->teamB = $teamB;
+        $this->status = $status;
+        $this->scoreA = $scoreA;
+        $this->scoreB = $scoreB;
     }
 
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @param mixed $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPasswrod()
-    {
-        return $this->passwrod;
-    }
-
-    /**
-     * @param mixed $passwrod
-     */
-    public function setPasswrod($passwrod)
-    {
-        $this->passwrod = $passwrod;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmailAddress()
-    {
-        return $this->emailAddress;
-    }
-
-    /**
-     * @param mixed $emailAddress
-     */
-    public function setEmailAddress($emailAddress)
-    {
-        $this->emailAddress = $emailAddress;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUserType()
-    {
-        return $this->userType;
-    }
-
-    /**
-     * @param mixed $userType
-     */
-    public function setUserType($userType)
-    {
-        $this->userType = $userType;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTime()
-    {
-        return $this->time;
-    }
-
-    /**
-     * @param mixed $time
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAccessToken()
-    {
-        return $this->accessToken;
-    }
-
-    /**
-     * @param mixed $accessToken
-     */
-    public function setAccessToken($accessToken)
-    {
-        $this->accessToken = $accessToken;
-    }
 
     public function __toString(){
  // TODO: Implement __toString() method.
@@ -172,15 +48,15 @@ class User
 
         $format = "<ul>
                 <li>Id: %u</li>
-                <li>username: %s</li>
-                <li>password: %s</li>
-                <li>email Address: %s</li>
-                <li>access token: %s</li>
-                <li>user type: %s</li>
-                <li>create time: %s</li>
+                <li>time: %s</li>
+                <li>location: %s</li>
+                <li>teamA: %s</li>
+                <li>teamB: %s</li>
+                <li>score: %s</li>
+                
 
 </ul>";
-        return sprintf($format,$this->id,$this->username,$this->password,$this->emailAddress,$this->accessToken,$this->userType,$this->time);
+        return sprintf($format,$this->id,$this->time,$this->location,$this->teamA,$this->teamB,$this->score);
     }
 
 

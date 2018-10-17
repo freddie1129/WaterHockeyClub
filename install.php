@@ -36,7 +36,7 @@ $db->query('CREATE TABLE IF NOT EXISTS "news" (
     "author" VARCHAR,
     FOREIGN KEY(userId) REFERENCES user(id)
 )');
-echo "<h3>Create Club news table</h3>";
+echo "<h3>Create Team news table</h3>";
 
 // Create New Comment table.
 $db->query('CREATE TABLE IF NOT EXISTS "comment" (
@@ -48,29 +48,30 @@ $db->query('CREATE TABLE IF NOT EXISTS "comment" (
     FOREIGN KEY(userId) REFERENCES user(id),
     FOREIGN KEY(newsId) REFERENCES news(id)
 )');
-echo "<h3>Create Club comments table</h3>";
+echo "<h3>Create Team comments table</h3>";
 
-
-
-
-
-// Create Club table.
-$db->query('CREATE TABLE IF NOT EXISTS "club" (
+// Create Team table.
+$db->query('CREATE TABLE IF NOT EXISTS "team" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "name" VARCHAR,
-    "location" VARCHAR
+    "location" VARCHAR,
+    "establishTime" VARCHAR,
+    "captionName" VARCHAR,
+    "intro" TEXT
 )');
-echo "<h3>Create Club table</h3>";
-
+echo "<h3>Create Team table</h3>";
 
 // Create Team member table.
-$db->query('CREATE TABLE IF NOT EXISTS "player" (
+$db->query('CREATE TABLE IF NOT EXISTS "member" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "first_name" VARCHAR,
-    "last_name" VARCHAR,
+    "firstName" VARCHAR,
+    "lastName" VARCHAR,
+    "nickName" VARCHAR,
+    "gender" VARCHAR,
     "birthday" DATE,
-    "clubId" INTEGER,
-    FOREIGN KEY(clubId) REFERENCES club(id)
+    "teamId" INTEGER,
+    "teamName" VARCHAR,
+    FOREIGN KEY($teamId) REFERENCES team(id)
 )');
 echo "<h3>Create Team member table</h3>";
 
@@ -78,12 +79,15 @@ echo "<h3>Create Team member table</h3>";
 // Create Match table.
 $db->query('CREATE TABLE IF NOT EXISTS "match" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "club_a_id" VARCHAR,
-    "club_b_id" VARCHAR,
     "time" DATE,
     "location" VARCHAR,
-    FOREIGN KEY(club_a_id) REFERENCES club(id),
-    FOREIGN KEY(club_b_id) REFERENCES club(id)
+    "teamA" INTEGER,
+    "teamB" INTEGER,
+    "status" VARCHAR,
+    "scoreA" VARCHAR,
+    "scoreB" VARCHAR,
+    FOREIGN KEY($teamA) REFERENCES team(id),
+    FOREIGN KEY($teamA) REFERENCES team(id)
 )');
 
 
@@ -160,6 +164,16 @@ for ($index = 0; $index < count($newsList); $index++) {
     {
         echo $commentList[$i];
     }
+}
+
+
+echo "<h3>Insert some Teams for testing</h3>";
+dbDeleteAllTeam();
+for ($index = 0; $index < 20; $index++) {
+    $t = new Team(0,"Team_".strval($index), "Somewhere".strval($index),
+        "establisTime".strval(1990 + $index),"Jack".strval($index),
+        "Introduction   ".strval($index));
+    dbInsertTeam($t);
 }
 
 ?>
