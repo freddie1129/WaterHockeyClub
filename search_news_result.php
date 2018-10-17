@@ -71,41 +71,24 @@
             </span>
         </div>';
             echo sprintf($searchFormat,$startTime,$endTime, $keywords);
-            $rowformat = '<tr>
-                <td class="col-md-1  text-center">%u</td>
+            $rowformat = '<tr valign="middle" >
+                <td class="col-md-1  text-center" ><p>%u</p></td>
                 <td class="col-md-1  text-center">%s</td>
                 <td class="col-md-6  text-center"><a id="news_title_%u"  href="newspage.php?newId=%u&userId=%u">%s</a></td>
                 <td class="col-md-2  text-center">%s</td>
                 <td class="col-md-2  text-center">
-                    <button id="button_edit_news_%u" type="button" class="btn btn-primary edit_news">&nbsp;&nbsp;Edit&nbsp;&nbsp;</button>
-                    <button id="button_edit_news_%u" type="button" class="btn btn-danger delete_news">Delete</button>
-                    
+                    <button id="button_edit_news_%u" type="button" class="btn btn-primary edit_news" data-toggle="modal">&nbsp;&nbsp;Edit&nbsp;&nbsp;</button>
+                    <button id="button_delete_news_%u" type="button" class="btn btn-danger delete_news">Delete</button>
+                    <input id="inputNewsId_%u" type="hidden" value="%u">
+                    <input id="inputNewsTitle_%u" type="hidden" value="%s">
+                    <input id="inputNewsContent_%u" type="hidden" value="%s">
                 </td>
             </tr>';
 
-            //$startDate = $_GET["startDate"];
-            //$endDate = $_GET["endDate"];
-            $newsFormat = "<div id=\"news_%u\">
-                    <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u&userId=%u\">%s</a>
-                    <span style=\"float:right;\">%s</span></p>
-                    <button id=\"button_edit_news_%u\" class=\"class_edit_news\" type=\"button\" class=\"editNews btn btn-primary\" data-toggle=\"modal\" >Edit</button>
-                    <button id=\"button_delete_news_%u\" class=\"class_delete_news\" type=\"button\" class=\"deleteNews btn btn-danger\" >Delete</button>
-                    <input id=\"inputNewsId_%u\" type=\"hidden\" value=\"%u\">
-                    <input id=\"inputNewsTitle_%u\" type=\"hidden\" value=\"%s\">
-                    <input id=\"inputNewsContent_%u\" type=\"hidden\" value=\"%s\">
-                    </div>";
-
-//            $newsList = dbSearchNews($keywords,$startDate,$endDate);
             $newsList = dbSearchNews($keywords,$startTime,$endTime);
-
             if (count($newsList) == 0)
             {
                 echo  "<h4 style='margin-top: 20px; margin-bottom: 50px'><b>Sorry, No news matches your search condition. Please try other conditions.</b></h4>";
-
-
-
-
-
             }
             else {
                 echo '<table class="table table-bordered table-striped">
@@ -119,22 +102,53 @@
                             </tr>
                         </thead>
                         <tbody id="myTable">';
-
-
-
                 for ($i = 0; $i < count($newsList); $i++) {
                     $item = $newsList[$i];
-                    //$txt = sprintf($newsFormat,  $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
-                    //    $item->id,$item->id,
-                    //    $item->id, $item->title,
-                    //    $item->id, $item->content);
-                    $txt = sprintf($rowformat, $i, $item->author, $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id);
+                    $txt = sprintf($rowformat, $i, $item->author, $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
+                        $item->id, $item->id,
+                        $item->id, $item->title,
+                        $item->id, $item->content);
                     echo $txt;
                 }
                echo  '</tbody> </table>';
             }
             ?>
+        <button id="createNewNews" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Post a News</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
 
+
+    </div>
+
+    <div class="container">
+        <!-- Edit News interface -->
+        <div class="modal fade" id="editNewsModal" role="dialog">
+            <div class="modal-dialog">
+                <input type="hidden" name="action" value="httpSignup">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="edit_dialog_title" class="modal-title" style="text-align: center"><b>Edit News</b></h4>
+                    </div>
+                    <div class="modal-body">
+                        <input id="modal_newsId" type="hidden" class="form-control" value="newNews">
+                        <p for="newsTitle"><b>Title:</b></p>
+                        <input id="modal_newsTitle" type="text" class="form-control" name="newsTitle">
+                        <p for="newsContent" style="margin-top: 10px;"><b>Content:</b></p>
+                        <textarea id="modal_newsContent" type="text" class="form-control" name="newsContent"
+                                  rows="20"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="update_editNews" type="submit" class="btn btn-primary" data-dismiss="modal">
+                            &nbsp;&nbsp; Confirm &nbsp;&nbsp;
+                        </button>
+                        <button id="create_editNews" type="submit" class="btn btn-primary" data-dismiss="modal">
+                            &nbsp;&nbsp; Post &nbsp;&nbsp;
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -144,6 +158,9 @@
 <footer class="container-fluid text-center">
     <p>Power by Chen Zhu (u1098252)  u1098252@umail.usq.edu.au </p>
 </footer>
+
+
+
 
 
 <script src="js/search_news_result.js" type="module"></script>

@@ -154,7 +154,7 @@ function httpGetNewsList($pageId,$userId)
                     <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u&userId=%u\">%s</a>
                     <span style=\"float:right;\">%s</span></p>
                     <button id=\"button_edit_news_%u\" type=\"button\" class=\"editNews btn btn-primary\" data-toggle=\"modal\" >Edit</button>
-                    <button id=\"button_edit_news_%u\" type=\"button\" class=\"deleteNews btn btn-danger\" >Delete</button>
+                    <button id=\"button_delete_news_%u\" type=\"button\" class=\"deleteNews btn btn-danger\" >Delete</button>
                     <input id=\"inputNewsId_%u\" type=\"hidden\" value=\"%u\">
                     <input id=\"inputNewsTitle_%u\" type=\"hidden\" value=\"%s\">
                     <input id=\"inputNewsContent_%u\" type=\"hidden\" value=\"%s\">
