@@ -11,6 +11,7 @@
 include_once 'libcommon.php';
 include_once 'User.php';
 include_once 'News.php';
+include_once 'Comment.php';
 include_once 'constant.php';
 
 
@@ -249,14 +250,14 @@ function httpAddComment($newsId, $userId, $content)
 {
     //$user = dbGetUserById($userId);
     $comment = new Comment(0,$newsId,$userId,date('Y-m-d H:i:s'),$content);
-    $ret = dbInsertComment($comment);
-    //$ret = true;
+    dbInsertComment($comment);
+    $ret = true;
     if ($ret == true)
     {
         $ret = array ( "status" => "success",
-            "title" => $newsId,
-            "content" => $userId,
-            "id" =>$content,
+            "title" => $comment->content,
+            "content" => $comment->newsId,
+            "id" =>$comment->userId,
         );
         echo json_encode($ret);
     }

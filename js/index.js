@@ -621,6 +621,23 @@ $(document).ready(function () {
         var newsId = Number($("#news_id").val());
         var commentContent = $("#edit_news_comment").val();
 
+
+        if (commentContent == "")
+        {
+            alert("Please input your comments.");
+            return false;
+        }
+        if (commentContent.length > 1000)
+        {
+            alert("Comment cannot be more then 1000 characters.");
+            return false;
+        }
+        if (commentContent.length < 10)
+        {
+            alert("Comment cannot be less then 10 characters.");
+            return false;
+        }
+
         var data;
 
             console.log(usrId,newsId,commentContent);
@@ -653,8 +670,14 @@ $(document).ready(function () {
     });
 
 
-
-
+    $("#id_search_news").on('click', function() {
+        var keyworks = $("#id_search_keywords").val();
+        var tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate()+1);
+        var endTime =  tomorrow.toISOString().split("T")[0];
+        var url = "search_news_result.php?" + "userId=" + usrId + "&" + "keywords=" + keyworks + "&startTime=2000-01-01" + "&endTime=" + endTime;
+        $("#id_link_search").attr("href", url).attr("target", "_blank")[0].click();
+    });
     updateNewsList(currentNewsPage);
     console.log("currentNewsPage " + currentNewsPage);
 

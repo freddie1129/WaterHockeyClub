@@ -7,8 +7,12 @@ include_once 'Comment.php';
 
 include_once 'constant.php';
 
+
+
+global $glbDbName;
+
 // Create a new database, if the file doesn't exist and open it for reading/writing.
-$db = new SQLite3('waterhockey.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+$db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
 
 // Create users' table.
 $db->query('CREATE TABLE IF NOT EXISTS "user" (

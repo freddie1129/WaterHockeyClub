@@ -410,6 +410,42 @@ function dbGetNewsById($id)
     }
 }
 
+
+// select all users for the user table
+// query a user from user table by id
+function dbSearchNews($keywords,$startDate, $endDate)
+{
+    global $glbDbName;
+    $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+ //   $statement = $db->prepare('SELECT * FROM news WHERE title LIKE "%:title%" AND time BETWEEN DATE (":startDate") AND DATE(":endDate") ');
+
+    $sqlStatment = 'SELECT * FROM news WHERE ((title LIKE "%%%s%%") OR (content LIKE "%%%s%%")) AND time BETWEEN DATE ("%s") AND DATE("%s")';
+    $sqlStatment = sprintf($sqlStatment,$keywords,$keywords, $startDate,$endDate);
+    //return $sqlStatment;
+
+    $statement = $db->prepare($sqlStatment); // AND time BETWEEN DATE (":startDate") AND DATE(":endDate") ');
+
+    //$statement = $db->prepare('SELECT * FROM news WHERE title LIKE "%%:title%%"'); // AND time BETWEEN DATE (":startDate") AND DATE(":endDate") ');
+
+    //$statement->bindValue(':title', '3');
+   // $statement->bindValue(':startDate', $startDate);
+   // $statement->bindValue(':endDate', $endDate);
+    $result = $statement->execute();
+    $newsList = array();
+    while($row = $result->fetchArray()) {
+        $news = new News($row["id"],$row["title"],$row["time"],$row["content"],$row["userId"],$row["author"]);
+        array_push($newsList,$news);
+    }
+    $db->close();
+    return $newsList;
+}
+
+
+
+
+
+
+
 // select all users for the user table
 // query a user from user table by id
 function dbCountNews()
@@ -476,7 +512,7 @@ function dbGetCommentByNewsId($newId) {
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    $statement = $db->prepare('SELECT * FROM "comment" WHERE "newsId" = :newsId ORDER BY "time"');
+    $statement = $db->prepare('SELECT * FROM "comment" WHERE "newsId" = :newsId ORDER BY "time" DESC ');
     $statement->bindValue(':newsId', $newId);
     $result = $statement->execute();
 

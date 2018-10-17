@@ -9,64 +9,25 @@ include_once 'libcommon.php';
 include_once 'User.php';
 include 'constant.php';
 
+global $glbDbName;
+
+$db = new SQLite3('$glbDbName', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+
+$now = date('Y-m-d H:i:s');
+echo $now;
+echo "<br>";
+
+$newDate = date("Y-m-d", strtotime($now));
+
+echo $newDate;
+
+$news = dbSearchNews("","2018-09-01", $newDate);
 
 
-$db = new SQLite3('waterhockey.sqlite', SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-
-// Test User table's interfaces
-
-// Delete All users
-
-dbDeleteAllUser();
-
-// Add some users
-$index = 0;
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeEditor, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeClient, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
-dbInsertUser(new User( 0, $username = "chen_" . strval($index++),"secret","chen@gmail.com", dbGenerateAccessToken($username), $glbUserTypeAdmin, date('Y-m-d H:i:s')));
-
-
-
-// List All users
-echo "<h3>List all users</h3>";
-$userList = dbGetAllUsers();
-for($x = 0; $x < count($userList); $x++) {
-    $user = $userList[$x];
-    echo "<p>$user<p>";
-    $lastIndex = $user->id;
-}
-
-// Get User by Id
-echo "<h3>Get User by id, id = $lastIndex</h3>";
-$user  = dbGetUserById($lastIndex);
-if ($user != false)
+echo "<p>Print News</p>";
+for ($i = 0;$i < count($news); $i++)
 {
-    echo "<p>$user<p>";
+    echo $news[$i];
 }
 
-echo "<h3>Update user, id = $lastIndex</h3>";
-$user->setUsername("freee");
-$user->setUserType($glbUserTypeEditor);
-dbUpdateUser($user);
-$user  = dBGetUserById($lastIndex);
-if ($user != false)
-{
-    echo "<p>$user<p>";
-}
-
-// Delete user by Id
-echo "<h3>Delete user, id = $lastIndex</h3>";
-dbDeleteUser($lastIndex);
-
-echo "<h3>List all users</h3>";
-$userList = dbGetAllUsers();
-for($x = 0; $x < count($userList); $x++) {
-    $user = $userList[$x];
-    echo "<p>$user<p>";
-
-}
-
-echo("\n");
-
+?>

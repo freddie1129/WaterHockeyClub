@@ -14,7 +14,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/index.css">
 
-
+    <style>
+        p.comment {
+            border-style: solid;
+            border-color: green;
+        }
+    </style>
 
 </head>
 <body>
@@ -77,18 +82,19 @@
 
             echo sprintf('<input id="news_id" type="hidden" name="action" value="%u">',$newId);
             echo '<div style="width:100%;"><textarea id="edit_news_comment" type="text" style="width:100%;" rows="5"></textarea></div>';
-            echo '<div align="right">';
-            echo '<button id="add_button_comment" align="right" type="button" class="btn btn-primary" data-toggle="modal" >Add A Comment</button>';
+            echo '<p align="right" style="font-size: 10px;">(Max character 1000)</p>';
+            echo '<div align="right" style="margin-top: 5px; margin-bottom: 10px;">';
+            echo '<button id="add_button_comment" align="right" type="button" class="btn btn-primary" data-toggle="modal" >Comment</button>';
             echo '</div>';
 
-
+            echo '<hr/>';
 
             $commentList = dbGetCommentByNewsId($newId);
             for ($index = 0; $index < count($commentList); $index++)
             {
                 $comment = $commentList[$index];
                 $user = dbGetUserById($comment->userId);
-                $format = '<p style="text-align:left;">%s<span style="float:right;">%s</span></p><p>%s</p>';
+                $format = '<p style="text-align:left; font-weight: bold; margin-bottom: 1px;">%s<span style="float:right; font-weight: normal;">%s</span></p><p style="margin-bottom: 20px;">%s</p>';
                 echo sprintf($format,$user->username,$comment->time,$comment->content);
             }
             echo sprintf("</div>");

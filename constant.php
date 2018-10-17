@@ -6,7 +6,7 @@
  * Time: 11:52 PM
  */
 
-$glbDbName = 'waterhockey.sqlite';
+$glbDbName = 'waterhockey1.sqlite';
 $glbUserTypeAdmin = 'admin';
 $glbUserTypeEditor = 'editor';
 $glbUserTypeClient = 'client';
