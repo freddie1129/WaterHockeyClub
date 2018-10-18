@@ -10,41 +10,16 @@ include_once 'User.php';
 include 'constant.php';
 
 global $glbDbName;
+global $glbMatchStatusInProgress;
+global $glbMatchStatusHaveDone;
+global $glbMatchStatusInComing;
 
 
 
-// Create Team member table.
-$db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
+echo "<h3>Insert some Testing Matches</h3>";
+$match = new Match(0,"2018-10-18T10:30","beijing", 12,6,"d",3,6);
+dbInsertMatch($match);
 
-// Create Match table.
-$db->query('CREATE TABLE IF NOT EXISTS "match" (
-    "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "time" DATE,
-    "location" VARCHAR,
-    "teamA" INTEGER,
-    "teamB" INTEGER,
-    "status" VARCHAR,
-    "scoreA" VARCHAR,
-    "scoreB" VARCHAR,
-    FOREIGN KEY(teamA) REFERENCES team(id),
-    FOREIGN KEY(teamB) REFERENCES team(id)
-)');
-
-echo "<h3>Insert some Member for testing</h3>";
-$teamList = dbGetAllTeams();
-for ($index = 0 ; $index < count($teamList); $index++)
-{
-    $team = $teamList[$index];
-    for ($i = 0; $i < 10; $i++)
-    {
-        $member = new Member(0,"firstName".strval($i),"LastName".strval($i),
-            "nickName".strval($i),"male",date('Y-m-d'),$team->id,$team->name);
-        dbInsertMember($member);
-    }
-}
-
-
-$db->close();
 
 
 ?>

@@ -62,7 +62,6 @@ if (isset($_POST['action']))
         case 'httpCreateTeam':
             httpCreateTeam($_POST['teamName'], $_POST['teamLocation'],$_POST['teamEstablishTime'],$_POST['teamCaptionName'],$_POST['teamIntroduction']);
             break;
-
         case 'httpUpdateMember':
             httpUpdateMember($_POST['id'], $_POST['firstName'], $_POST['lastName'],$_POST['nickName'],$_POST['gender'],$_POST['birthday'],$_POST['teamId'],$_POST['teamName']);
             break;
@@ -71,6 +70,15 @@ if (isset($_POST['action']))
             break;
         case 'httpDeleteMember':
             httpDeleteMember($_POST['id']);
+            break;
+        case 'httpUpdateMatch':
+            httpUpdateMatch($_POST['matchId'], $_POST['matchTime'], $_POST['matchLocation'],$_POST['matchTeamA'],$_POST['matchTeamB'],$_POST['matchStatus'],$_POST['matchScoreA'],$_POST['matchScoreB']);
+            break;
+        case 'httpCreateMatch':
+            httpCreateMatch($_POST['matchId'], $_POST['matchTime'], $_POST['matchLocation'],$_POST['matchTeamA'],$_POST['matchTeamB'],$_POST['matchStatus'],$_POST['matchScoreA'],$_POST['matchScoreB']);
+            break;
+        case 'httpDeleteMatch':
+            httpDeleteMatch($_POST['matchId']);
             break;
     }
 }
@@ -423,7 +431,59 @@ function httpDeleteMember($id)
 
 
 
+function httpCreateMatch($matchId, $matchTime,$matchLocation,$matchTeamA,$matchTeamB,$matchStatus,$matchScoreA,$matchScoreB)
+{
+    if (is_null($matchTime))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    $match = new Match(0, $matchTime,$matchLocation,$matchTeamA,$matchTeamB,$matchStatus,$matchScoreA,$matchScoreB);
+    dbInsertMatch($match);
+    $ret = array ( "status" => "success",
+    );
+    echo json_encode($ret);
 
+}
+
+function httpUpdateMatch($matchId, $matchTime,$matchLocation,$matchTeamA,$matchTeamB,$matchStatus,$matchScoreA,$matchScoreB)
+{
+    if (is_null($matchTime))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    dbUpdateMatch($matchId, $matchTime,$matchLocation,$matchTeamA,$matchTeamB,$matchStatus,$matchScoreA,$matchScoreB);
+    $ret = array ( "status" => "success",
+
+    );
+    echo json_encode($ret);
+}
+
+function httpDeleteMatch($matchId)
+{
+    if (is_null($matchId))
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+    $ret  = dbDeleteMatchById($matchId);
+    if ($ret == true)
+    {
+        $ret = array ( "status" => "success",
+        );
+        echo json_encode($ret);
+    }
+    else
+    {
+        $ret = array ( "status" => "failed",
+        );
+        echo json_encode($ret);
+    }
+}
 
 
 

@@ -44,19 +44,18 @@ class Match
 
     public function __toString(){
  // TODO: Implement __toString() method.
+        $formatnew = "<p>
+                <b>Id:&nbsp;&nbsp;</b>%u&nbsp;
+                <b>Status:&nbsp;&nbsp;</b>%s&nbsp;
+                <b>Time:&nbsp;&nbsp;</b>%s&nbsp;
+                <b>Location:&nbsp;&nbsp;</b>%s&nbsp;
+                <b>TeamA:&nbsp;&nbsp;</b>%s&nbsp;
+                <b>TeamB:&nbsp;&nbsp;</b>%s&nbsp;
+                <b>ScoreA:&nbsp;&nbsp;</b>%u&nbsp;
+                <b>ScoreB:&nbsp;&nbsp;</b>%u&nbsp;
+                </p>";
 
-
-        $format = "<ul>
-                <li>Id: %u</li>
-                <li>time: %s</li>
-                <li>location: %s</li>
-                <li>teamA: %s</li>
-                <li>teamB: %s</li>
-                <li>score: %s</li>
-                
-
-</ul>";
-        return sprintf($format,$this->id,$this->time,$this->location,$this->teamA,$this->teamB,$this->score);
+        return sprintf($formatnew,$this->id,$this->time,$this->status, $this->location,$this->teamA,$this->teamB,$this->scoreA,$this->scoreB);
     }
 
 

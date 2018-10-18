@@ -10,6 +10,9 @@ include_once 'constant.php';
 
 
 global $glbDbName;
+global $glbMatchStatusInProgress;
+global $glbMatchStatusHaveDone;
+global $glbMatchStatusInComing;
 
 // Create a new database, if the file doesn't exist and open it for reading/writing.
 $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
@@ -79,7 +82,7 @@ echo "<h3>Create Team member table</h3>";
 // Create Match table.
 $db->query('CREATE TABLE IF NOT EXISTS "match" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    "time" DATE,
+    "time" DATETIME,
     "location" VARCHAR,
     "teamA" INTEGER,
     "teamB" INTEGER,
@@ -188,6 +191,54 @@ for ($index = 0 ; $index < count($teamList); $index++)
         dbInsertMember($member);
     }
 }
+
+
+echo "<h3>Insert some Testing Matches</h3>";
+dbDeleteAllMatch();
+$teamList = dbGetAllTeams();
+$teamCount = count($teamList);
+$locations=array("Brisbane","Sydney","Perth","New York","Adelaide","Townsville","Toowoomba");
+for ($index = 0 ; $index < 20; $index++)
+{
+    $teamA = $teamList[rand(0,$teamCount - 1)];
+    $teamB = $teamList[rand(0,$teamCount - 1)];
+    if ($index < 10)
+    {
+        $progress = $glbMatchStatusHaveDone;
+        $date = date('Y-m-d H:i:s', strtotime(sprintf("-%u day" ,20-$index)));
+        $scoreA = rand(0,20);
+        $scoreB = rand(0,20);
+        $location=$locations[rand(0,6)];
+
+    }
+    else if ($index < 15)
+    {
+        $progress = $glbMatchStatusInProgress;
+        $date = date('Y-m-d H:i:s');
+        $scoreA = rand(0,20);
+        $scoreB = rand(0,20);
+        $location=$locations[rand(0,6)];
+
+    }
+    else
+    {
+        $progress = $glbMatchStatusInComing;
+        $date = date('Y-m-d H:i:s', strtotime(sprintf("+%u day" ,$index)));
+        $scoreA = 0;
+        $scoreB = 0;
+        $location=$locations[rand(0,6)];
+
+    }
+    $match = new Match(0,$date,$location, $teamA->id,$teamB->id,$progress,$scoreA,$scoreB);
+    dbInsertMatch($match);
+}
+$matchList = dbGetAllMatch();
+foreach ($matchList as $match )
+{
+    echo $match;
+}
+
+
 
 
 ?>

@@ -819,13 +819,13 @@ function dbDeleteMatchById($id) {
 function dbUpdateMatch($id,$time,$location, $teamA, $teamB, $status, $scoreA, $scoreB) {
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    $statement = $db->prepare('UPDATE team SET
+    $statement = $db->prepare('UPDATE match SET
                                                 time = :time,
                                                 location = :location,
                                                 teamA = :teamA,
                                                 teamB = :teamB,
                                                 status = :status,
-                                                scoreA = :scoreA
+                                                scoreA = :scoreA,
                                                 scoreB = :scoreB
                                     WHERE id = :id');
     $statement->bindValue(':id', $id);
@@ -846,7 +846,7 @@ function dbUpdateMatch($id,$time,$location, $teamA, $teamB, $status, $scoreA, $s
 function dbGetAllMatch() {
     global $glbDbName;
     $db = new SQLite3($glbDbName, SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE);
-    $statement = $db->prepare('SELECT * FROM "match"');
+    $statement = $db->prepare('SELECT * FROM "match" ORDER BY time DESC ');
     $result = $statement->execute();
     $list = array();
     while($row = $result->fetchArray()) {
