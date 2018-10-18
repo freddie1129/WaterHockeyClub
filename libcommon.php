@@ -755,7 +755,6 @@ function dbGetAllMember() {
     return $list;
 }
 
-
 // Get All Member in a Team From Member Table
 function dbGetTeamMember($teamId) {
     global $glbDbName;
