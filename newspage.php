@@ -41,35 +41,43 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Team</a></li>
-                <li><a href="#">Match</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a hidden id="buttonLogin" href="#loginModal" data-toggle="modal" data-target="#loginModal" ><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Login</a></li>
-                <li><a hidden id="buttonSignup" href="#signupModal" data-toggle="modal" data-target="#signupModal" ><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;Sign up</a></li>
-                <li><a hidden id="buttonUserManage" href="account_manage.php" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Account Manage</a></li>
-
-                <li><a hidden id="containerUsername" href="#editUserModal"><span class="glyphicon glyphicon-user"></span> <span id="txUsername" >name</span></a></li>
-
-                <li><a hidden id="buttonLogout" href="#loginModal" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li class="active"><a href="search_news_result.php" target="_blank">News</a></li>
+                <li ><a href="team_manage.php" target="_blank">Team</a></li>
+                <li><a href="match_manage.php" target="_blank">Match</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 
-<div class="container-fluid text-center">
-    <div class="row content">
+<div class="container-fluid">
+    <div class="container">
 
-        <div class="col-sm-8 text-left">
+
 
             <?php
             require_once('libcommon.php');
             require_once('constant.php');
             $newId = $_GET["newId"];
+
+            $showAction = false;
+            if (isset($_COOKIE["userId"]))
+            {
+                $showAction = false;
+                $userId = $_COOKIE["userId"];
+                //echo sprintf('<h1>%u</h1>',$userId);
+                $user = dbGetUserById($userId);
+                if ($user != false) {
+                        $showAction = true;
+                }
+            }
+            else
+            {
+                $showAction = false;
+            }
+
+
             $news = dbGetNewsById($newId);
             echo sprintf("<div id=\"news\">");
             echo sprintf("<h1 style=\"text-align:center;\">%s</h1>",$news->title);
@@ -80,11 +88,13 @@
             echo sprintf("<div id=\"comments\">");
             echo sprintf("<h3 style=\"text-align:left;\">Comment</h3>");
 
-            echo sprintf('<input id="news_id" type="hidden" name="action" value="%u">',$newId);
-            echo '<div style="width:100%;"><textarea id="edit_news_comment" type="text" style="width:100%;" rows="5"></textarea></div>';
-            echo '<p align="right" style="font-size: 10px;">(Max character 1000)</p>';
-            echo '<div align="right" style="margin-top: 5px; margin-bottom: 10px;">';
-            echo '<button id="add_button_comment" align="right" type="button" class="btn btn-primary" data-toggle="modal" >Comment</button>';
+            if ($showAction) {
+                echo sprintf('<input id="news_id" type="hidden" name="action" value="%u">', $newId);
+                echo '<div style="width:100%;"><textarea id="edit_news_comment" type="text" style="width:100%;" rows="5"></textarea></div>';
+                echo '<p align="right" style="font-size: 10px;">(Max character 1000)</p>';
+                echo '<div align="right" style="margin-top: 5px; margin-bottom: 10px;">';
+                echo '<button id="add_button_comment" align="right" type="button" class="btn btn-primary" data-toggle="modal" >Comment</button>';
+            }
             echo '</div>';
 
             echo '<hr/>';
@@ -103,31 +113,8 @@
 
 
 
-        </div>
-        <div class="col-sm-4 sidenav">
-            <?php
 
-            $row = 1;
-            if (($handle = fopen("match.csv", "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    $id = $data[0];
-                    $team1 = $data[1];
-                    $team2 = $data[2];
-                    $time = $data[3];
-                    $location = $data[4];
-                    echo "<div class=\"well\">\n";
-                    echo  sprintf("<p>%s <span class=\"vs\">VS</span> %s</p>\n",$team1,$team2);
-                    echo  sprintf("<p>%s</p>\n",$time);
-                    echo  sprintf( "<p>Location: %s</p>\n",$location);
-                    echo "</div>\n";
-                    $row++;
-                    if ($row > 3)
-                        break;
-                }
-                fclose($handle);
-            }
-            ?>
-        </div>
+
     </div>
 
 

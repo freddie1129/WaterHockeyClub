@@ -19,21 +19,40 @@
 <body>
 
 <!--navigation bar-->
-<?php
-include 'component.php';
-echo $html_nav;
-?>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li><a href="index.php">Home</a></li>
+                <li class="active"><a href="search_news_result.php" target="_blank">News</a></li>
+                <li><a href="team_manage.php" target="_blank">Team</a></li>
+                <li><a href="match_manage.php" target="_blank">Match</a></li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
 
 <div class="container-fluid text-center">
-    <div class="row content">
+    <div class="container">
 
-        <div class="col-sm-8 text-left">
+
             <?php
             $current_id = $_GET["id"];
             $id = "";
             $title = "";
             $date = "";
             $content = "";
+
+
             if (($handle = fopen("news.csv", "r")) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     $id = $data[0];
@@ -54,29 +73,7 @@ echo $html_nav;
 
 
         </div>
-        <div class="col-sm-4 sidenav">
-            <?php
-            $row = 1;
-            if (($handle = fopen("match.csv", "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    $id = $data[0];
-                    $team1 = $data[1];
-                    $team2 = $data[2];
-                    $time = $data[3];
-                    $location = $data[4];
-                    echo "<div class=\"well\">\n";
-                    echo  sprintf("<p>%s <span class=\"vs\">VS</span> %s</p>\n",$team1,$team2);
-                    echo  sprintf("<p>%s</p>\n",$time);
-                    echo  sprintf( "<p>Location: %s</p>\n",$location);
-                    echo "</div>\n";
-                    $row++;
-                    if ($row > 3)
-                        break;
-                }
-                fclose($handle);
-            }
-            ?>
-        </div>
+
     </div>
 </div>
 

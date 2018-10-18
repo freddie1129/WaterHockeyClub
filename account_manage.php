@@ -38,9 +38,6 @@
                 <li><a href="#">Match</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a hidden id="buttonLogout" href="index.php" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
-            </ul>
         </div>
     </div>
 </nav>

@@ -456,10 +456,12 @@ $(document).ready(function () {
         var r = confirm("Are you sure you want to logout?");
         if (r == true) {
             lib.deleteCookie(tag_cookie_accessToken);
+            lib.deleteCookie(tag_cookie_userId);
             $('#buttonLogin').show();
             $('#buttonSignup').show();
             $('#containerUsername').hide();
             $('#buttonLogout').hide();
+            location.reload();
         } else {
         }
 

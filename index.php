@@ -13,7 +13,32 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <style>
+        .matchTeam{
+            color: cornflowerblue;
+            font-size: larger;
+            text-align: center;
+            margin-top: 5px;
+        }
+        .scoreLabel{
+            text-align: center;
+            font-weight: bold;
+        }
 
+        .statusLabel{
+            text-align: center;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .edit_match{
+            float: left;
+            margin-right: 10px;
+        }
+
+        .clear_flow{
+            clear: both;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,10 +60,9 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="team_manage.php">Team</a></li>
-                <li><a href="#">Match</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="search_news_result.php" target="_blank">News</a></li>
+                <li><a href="team_manage.php" target="_blank">Team</a></li>
+                <li><a href="match_manage.php" target="_blank">Match</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a hidden id="buttonLogin" href="#loginModal" data-toggle="modal" data-target="#loginModal"><span
@@ -63,7 +87,7 @@
     <div class="row content">
 
         <div class="col-sm-8 text-left">
-            <h1>Welcome</h1>
+            <h1><b>Welcome</b></h1>
             <p><?php
                 $myfile = fopen("intro.txt", "r") or die("Unable to open file!");
                 $s = fread($myfile, filesize("intro.txt"));
@@ -71,9 +95,9 @@
                 fclose($myfile);
                 ?></p>
             <hr>
-            <h3>News</h3>
+            <h3><b>News</b></h3>
 
-            <div class="input-group">
+            <div class="input-group" style="margin-bottom: 20px">
                 <input id="id_search_keywords" type="text" class="form-control" placeholder="Input some keywords about news's title or content. ">
 
                 <span class="input-group-btn">
@@ -83,38 +107,43 @@
             </div>
 
 
-            <div id="newsList" style="clear: right;"></div>
-            <div class="container">
-                <button id="createNewNews" type="button" class="btn btn-default">New</button>
-                <button id="previousPage" type="button" class="btn btn-default">Previous</button>
-                <button id="nextPage" type="button" class="btn btn-default">Next</button>
-            </div>
+            <div id="newsList" style="margin-bottom: 20px"></div>
+            <!--div class="container"-->
+                <!--button id="createNewNews" type="button" class="btn btn-primary">New</button-->
+
+                <button id="nextPage" type="button" class="btn btn-primary" style="float: right; margin-left: 10px">&nbsp;&nbsp;&nbsp;Next&nbsp;&nbsp;&nbsp;</button>
+                <button id="previousPage" type="button" class="btn btn-primary" style="float: right" >Previous</button>
+            <!--/div-->
+
 
 
         </div>
         <div class="col-sm-4 sidenav">
             <?php
-
-            $row = 1;
-            if (($handle = fopen("match.csv", "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                    $id = $data[0];
-                    $team1 = $data[1];
-                    $team2 = $data[2];
-                    $time = $data[3];
-                    $location = $data[4];
+            require_once('libcommon.php');
+            $matchList = dbGetAllMatch();
+            $max = 4;
+            $showNum = count($matchList) < $max ? count($matchList) : $max;
+            for ($index = 0; $index < $showNum; $index++)
+                {
+                    $match = $matchList[$index];
+                    $teamA = dbGetTeamById($match->teamA);
+                    $teamB = dbGetTeamById($match->teamB);
                     echo "<div class=\"well\">\n";
-                    echo sprintf("<p>%s <span class=\"vs\">VS</span> %s</p>\n", $team1, $team2);
-                    echo sprintf("<p>%s</p>\n", $time);
-                    echo sprintf("<p>Location: %s</p>\n", $location);
+                    echo sprintf("<p>
+                                <a href=\"team_detail.php?teamId=%u\" target=\"_blank\"><b class='matchTeam'>%s</b></a>
+                                 <b>&nbsp;&nbsp;&nbsp;&nbsp;%u &ndash; %u&nbsp;&nbsp;&nbsp;&nbsp;</b>
+                                   <a  href=\"team_detail.php?teamId=%u\" target=\"_blank\"><b class='matchTeam'>%s</b></a>
+                                   </p>", $match->teamA, $teamA->name, $match->scoreA, $match->scoreB, $match->teamB, $teamB->name);
+                    echo sprintf("<p>%s</p>\n", $match->time);
+                    echo sprintf("<p><b>%s</b></p>\n", $match->location);
+                    echo sprintf("<p>%s</p>\n", $match->status);
                     echo "</div>\n";
-                    $row++;
-                    if ($row > 3)
-                        break;
                 }
-                fclose($handle);
-            }
+
+                echo '<a  href="match_manage.php" target="_blank">See more</a>';
             ?>
+
         </div>
     </div>
 
@@ -286,7 +315,7 @@
 </div>
 
 
-<footer class="container-fluid text-center">
+<footer class="container-fluid text-center" style="margin-top: 20px">
     <p>Power by Chen Zhu (u1098252) u1098252@umail.usq.edu.au </p>
 </footer>
 

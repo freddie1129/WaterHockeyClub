@@ -20,7 +20,6 @@
             font-size: larger;
             text-align: center;
             margin-top: 5px;
-
         }
         .scoreLabel{
             text-align: center;
@@ -60,11 +59,10 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Team</a></li>
-                <li><a href="#">Match</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="search_news_result.php" target="_blank">News</a></li>
+                <li><a href="team_manage.php" target="_blank">Team</a></li>
+                <li class="active"><a href="match_manage.php" target="_blank">Match</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a hidden id="buttonLogout" href="index.php" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
@@ -104,6 +102,8 @@
             {
                 $showAction = false;
             }
+
+
 
         if ($showAction == true) {
             echo '<button id="createNewMatch" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px; float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Add a new match</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>

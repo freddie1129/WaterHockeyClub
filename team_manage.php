@@ -31,15 +31,12 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Team</a></li>
-                <li><a href="#">Match</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="search_news_result.php" target="_blank">News</a></li>
+                <li class="active"><a href="team_manage.php" target="_blank">Team</a></li>
+                <li><a href="match_manage.php" target="_blank">Match</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a hidden id="buttonLogout" href="index.php" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
-            </ul>
+
         </div>
     </div>
 </nav>
@@ -64,6 +61,27 @@
                 $keywords="";
             }
 
+        $showAction = false;
+        if (isset($_COOKIE["userId"]))
+        {
+            $showAction = false;
+            $userId = $_COOKIE["userId"];
+            //echo sprintf('<h1>%u</h1>',$userId);
+            $user = dbGetUserById($userId);
+            if ($user != false) {
+                if ($user->userType == $glbUserTypeAdmin | $user->userType == $glbUserTypeEditor) {
+                    $showAction = true;
+                }
+            }
+        }
+        else
+        {
+            $showAction = false;
+        }
+
+
+
+
             $searchFormat =  '
         <div class="input-group" style="margin-bottom: 10px">
             <input id="id_search_team_keywords" type="text" class="form-control" value="%s" placeholder="Input some keywords about your interesting team.">
@@ -72,7 +90,7 @@
             </span>
         </div>';
             echo sprintf($searchFormat,$keywords);
-            $rowformat = '<tr valign="middle" >
+            $rowformatAction = '<tr valign="middle" >
                 <td class="col-md-1  text-center" >%u</td>
                 <td class="col-md-4  text-center"><a id="team_name_%u"  href="team_detail.php?teamId=%u">%s</a></td>
                 <td class="col-md-3  text-center">%s</td>
@@ -89,13 +107,25 @@
                 </td>
             </tr>';
 
+        $rowformatNoAction = '<tr valign="middle" >
+                <td class="col-md-1  text-center" >%u</td>
+                <td class="col-md-4  text-center"><a id="team_name_%u"  href="team_detail.php?teamId=%u">%s</a></td>
+                <td class="col-md-4  text-center">%s</td>
+                <td class="col-md-3  text-center">%s</td>
+               
+            </tr>';
+
+        $rowformat = $showAction ? $rowformatAction : $rowformatNoAction;
+
+
             $teamList = dbSearchTeam($keywords);
             if (count($teamList) == 0)
             {
                 echo  "<h4 style='margin-top: 20px; margin-bottom: 50px'><b>Sorry, No teams matches your search condition. Please try other keywords.</b></h4>";
             }
             else {
-                echo '<table class="table table-bordered table-striped">
+                if ($showAction) {
+                    echo '<table class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th style="text-align: center">Index</th>
@@ -106,8 +136,25 @@
                             </tr>
                         </thead>
                         <tbody id="myTable">';
+                }
+                else
+                {
+                    echo '<table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Index</th>
+                                <th style="text-align: center">Team Name</th>
+                                <th style="text-align: center">Club Location</th>
+                                <th style="text-align: center">Establish Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="myTable">';
+                }
+
+
                 for ($i = 0; $i < count($teamList); $i++) {
                     $item = $teamList[$i];
+
                     $txt = sprintf($rowformat,
                         $i + 1,     //index
                         $item->id, $item->id, $item->name,  //team name
@@ -125,8 +172,13 @@
                 }
                echo  '</tbody> </table>';
             }
+            if ($showAction)
+            {
+                echo '<button id="createNewTeam" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Create New Team</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
+';
+            }
+
             ?>
-        <button id="createNewTeam" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Create New Team</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
     </div>
 
     <div class="container">

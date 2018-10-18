@@ -174,7 +174,7 @@ function httpGetNewsList($pageId,$userId)
     {
         $news = dbGetNewsByPageID($pageId);
         $htmlArray = array();
-        for ($index = 0; $index < count($news); $index++)
+        /*for ($index = 0; $index < count($news); $index++)
         {
             $item = $news[$index];
             $txt = sprintf("<div id=\"news_%u\">
@@ -190,7 +190,24 @@ function httpGetNewsList($pageId,$userId)
                     $item->id, $item->title,
                     $item->id, $item->content);
             array_push($htmlArray,$txt);
+        }*/
+
+        for ($index = 0; $index < count($news); $index++)
+        {
+            $item = $news[$index];
+            $txt = sprintf("<div id=\"news_%u\">
+                    <p style=\"text-align:left;\"><a href=\"newspage.php?newId=%u&userId=%u\">%s</a>
+                    <span style=\"float:right;\">%s</span></p>
+                    <input id=\"inputNewsId_%u\" type=\"hidden\" value=\"%u\">
+                    <input id=\"inputNewsTitle_%u\" type=\"hidden\" value=\"%s\">
+                    <input id=\"inputNewsContent_%u\" type=\"hidden\" value=\"%s\">
+                    </div>",  $item->id, $item->id, $userId, $item->title, $item->time,
+                $item->id,$item->id,
+                $item->id, $item->title,
+                $item->id, $item->content);
+            array_push($htmlArray,$txt);
         }
+
 
         $ret = array ( "status" => "success",
             "news" => $htmlArray,

@@ -31,15 +31,12 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="index.php">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Team</a></li>
-                <li><a href="#">Match</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li class="active"><a href="search_news_result.php" target="_blank">News</a></li>
+                <li><a href="team_manage.php" target="_blank">Team</a></li>
+                <li><a href="match_manage.php" target="_blank">Match</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a hidden id="buttonLogout" href="index.php" ><span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Logout</a></li>
-            </ul>
+
         </div>
     </div>
 </nav>
@@ -52,13 +49,46 @@
         <?php
             require_once('libcommon.php');
             require_once ('constant.php');
-            global $glbUserTypeAdmin;
-            global $glbUserTypeEditor;
-            global $glbUserTypeClient;
-            $keywords = $_GET["keywords"];
-            $userId = $_GET["userId"];
-            $startTime = $_GET["startTime"];
-            $endTime = $_GET["endTime"];
+
+        global $glbUserTypeAdmin;
+        global $glbUserTypeEditor;
+        global $glbUserTypeClient;
+
+
+        $keywords = isset($_GET["keywords"]) ? $_GET["keywords"] : "";
+            //$userId = isset($_GET["userId"]) ? $_GET["userId"] : ;
+
+            $userId = isset($_COOKIE["userId"]) ? $_COOKIE["userId"] : 0;
+            $startTime = isset($_GET["startTime"]) ? $_GET["startTime"] : "2000-01-01";
+            $endTime = isset($_GET["endTime"]) ? $_GET["endTime"]: "2025-01-01";
+
+
+
+            $userId = 0;
+            $showAction = false;
+            if (isset($_COOKIE["userId"]))
+            {
+                $showAction = false;
+                $userId = $_COOKIE["userId"];
+                //echo sprintf('<h1>%u</h1>',$userId);
+                $user = dbGetUserById($userId);
+                if ($user != false) {
+                    if ($user->userType == $glbUserTypeAdmin | $user->userType == $glbUserTypeEditor) {
+                        $showAction = true;
+                    }
+                }
+            }
+            else
+            {
+                $showAction = false;
+            }
+
+
+
+
+
+
+
             $searchFormat =  '<div style="margin-bottom: 10px">
             <b>Start Time:&nbsp; </b> <input id="search_news_start_date" type="date" value="%s"> &nbsp; &nbsp;
             <b>End   Time:&nbsp; </b> <input id="search_news_end_date" type="date" value="%s"><br>
@@ -85,13 +115,27 @@
                 </td>
             </tr>';
 
+
+        $rowformatWithoutAction = '<tr valign="middle" >
+                <td class="col-md-1  text-center" ><p>%u</p></td>
+                <td class="col-md-2  text-center">%s</td>
+                <td class="col-md-6  text-center"><a id="news_title_%u"  href="newspage.php?newId=%u&userId=%u">%s</a></td>
+                <td class="col-md-3  text-center">%s</td>
+            </tr>';
+
+
+
+
+
             $newsList = dbSearchNews($keywords,$startTime,$endTime);
             if (count($newsList) == 0)
             {
                 echo  "<h4 style='margin-top: 20px; margin-bottom: 50px'><b>Sorry, No news matches your search condition. Please try other conditions.</b></h4>";
             }
             else {
-                echo '<table class="table table-bordered table-striped">
+                if ($showAction)
+                {
+                    echo '<table class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th style="text-align: center">Index</th>
@@ -102,18 +146,47 @@
                             </tr>
                         </thead>
                         <tbody id="myTable">';
+                }
+                else
+                {
+                    echo '<table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center">Index</th>
+                                <th style="text-align: center">Author</th>
+                                <th style="text-align: center">Title</th>
+                                <th style="text-align: center">Time</th>                               
+                            </tr>
+                        </thead>
+                        <tbody id="myTable">';
+                }
+
                 for ($i = 0; $i < count($newsList); $i++) {
                     $item = $newsList[$i];
-                    $txt = sprintf($rowformat, $i, $item->author, $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
-                        $item->id, $item->id,
-                        $item->id, $item->title,
-                        $item->id, $item->content);
+
+
+
+                    if ($showAction) {
+                        $txt = sprintf($rowformat, $i, $item->author, $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
+                            $item->id, $item->id,
+                            $item->id, $item->title,
+                            $item->id, $item->content);
+                    }
+                    else
+                    {
+                        $txt = sprintf($rowformatWithoutAction, $i, $item->author, $item->id, $item->id, $userId, $item->title, $item->time, $item->id, $item->id,
+                            $item->id, $item->id,
+                            $item->id, $item->title,
+                            $item->id, $item->content);
+                    }
                     echo $txt;
                 }
                echo  '</tbody> </table>';
             }
+            if ($showAction) {
+                echo '<button id="createNewNews" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Post a News</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>';
+            }
             ?>
-        <button id="createNewNews" type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px; padding-top: 15px; padding-bottom: 15px;float: right;">&nbsp;&nbsp;&nbsp;&nbsp;<b>Post a News</b> &nbsp;&nbsp;&nbsp;&nbsp;</button>
 
 
     </div>
