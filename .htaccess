@@ -1,0 +1,5 @@
+ErrorDocument 400 /Project/error_pages/new400.html
+ErrorDocument 401 /Project/error_pages/new401.html
+ErrorDocument 403 /Project/error_pages/new403.html
+ErrorDocument 404 /Project/error_pages/new404.html
+ErrorDocument 500 /Project/error_pages/new500.html

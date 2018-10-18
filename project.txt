@@ -1,4 +1,85 @@
 ==============================================================================
+Final Website Project Report
+==============================================================================
+Student Name: Chen Zhu
+Student Number: u1098252
+Project Topic: Underwater Hockey Club
+Project Progress Report
+
+1. Overview
+
+    This website is developed for a Underwater Hockey Club. Users can watch and comment club news, look up teams and teams member,
+    get the recent and history matches and scores. This website does not only provide the information display function, but
+    also the fully information management functions. The registered website's user can post news, update and delete news, as well
+    as teams, team members and matches. Different level's user has different right to use this website.
+
+2. Service
+
+    a. For Anonymous user.
+        Watch news, watch news's comments.
+        Search news by keywords and date.
+        Access team List page.
+        Access team detail page, where team member's detail is shown.
+        Access match list.
+        Sign up to become a general registered user.
+
+    b. For general registered user.
+        All services that a anonymous user has.
+        Log in and log out.
+        Comments news on news page.
+
+    c. For Advanced registered user.
+        All services that a general registered user has.
+        Access news management feature, add, delete and update news.
+        Access team management feature, Add, delete and update teams.
+        Access team member management feature, Add, delete and update team members.
+        Access match management feature, Add, delete and update matches.
+
+    d. For system administrator.
+        All services that an advanced user has.
+        Access account management feature, upgrade a general registered user to registered user.
+        Access account management feature, delete any user.
+
+    Note: Administrator is preset by the website's owner from the database directly, any user can be upgrated to
+          system administrator from this website.
+
+3. Miscellaneous
+
+    a. Running install, generate a set of testing data to have full functional test.The below users will be created
+       automatically after running the install.php for testing purpose.
+       username: admin_0   passwords: secret   (user type: System administrator)
+       username: admin_1   passwords: secret   (user type: System administrator)
+       username: editor_0  passwords: secret   (user type: Advanced registered user)
+       username: editor_1  passwords: secret   (user type: Advanced registered user)
+       username: client_0  passwords: secret   (user type: General user)
+       username: client_1  passwords: secret   (user type: General user)
+
+    b. Playing in the website on behalf of different type of users to check the different features.
+
+    c. Six Sqlite tables running behind the web page.
+        user table.
+        news table.
+        news comment table. (m-m table)
+        team member table.
+        team table.
+        match table.
+
+    d.  SQL injection consideration.
+        Apply data bind to create sql statement, which can prevent most sqli attract. E.g.
+            $statement = $db->prepare('SELECT * FROM "member" where "teamId" = :teamId');
+            $statement->bindValue(':teamId', $teamId);
+
+    e. Apply .htacess file to reconfigure the server.
+        set up customized 400, 404, 403 page, etc.
+
+    f. Ajax is used to exchange data between web page and web server.
+
+    g. Allow user to operated all function on the database from the web page, except setting up admin user.
+
+    h. jQuery is used in this project.
+
+
+==============================================================================
 Assignment 1 project.text
 ==============================================================================
 Student Name: Chen Zhu
@@ -39,7 +120,6 @@ IMPORTANT NOTE: Before exploring index.php, please running install.php to set up
     the detail of the news.
 8. Testing method: setting up the project by running the install.php, the tables will be created and some example data
     will be insert the db for the purpose of testing.
-
 
 
 ==============================================================================
